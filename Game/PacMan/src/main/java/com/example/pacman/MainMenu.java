@@ -22,7 +22,7 @@ import java.sql.PreparedStatement;
 public class MainMenu extends Application {
 
     private boolean loggedIn = false;
-    private String currentUsername = ""; // Track the currently logged-in user
+    private String currentUsername = "";
 
     @Override
     public void start(Stage primaryStage) {
