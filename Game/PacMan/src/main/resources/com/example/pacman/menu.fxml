@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #37474F;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pacman.Menu">
+
+    <ImageView fitHeight="414.0" fitWidth="600.0">
+        <image>
+            <Image url="@Game/Pacman/src/images/temp/ippoMain.gif" />
+        </image>
+    </ImageView>
+
+    <VBox alignment="CENTER" layoutX="200.0" layoutY="50.0" prefWidth="200.0" spacing="20.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="50.0">
+        <Text style="-fx-fill: #ECEFF1; -fx-font-size: 36px; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, black, 3.0, 0.7, 0, 1);" text="Punch Man">
+            <Font size="36.0" />
+        </Text>
+        <Button onAction="#startGame" style="-fx-background-color: #ff6f61; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 5; -fx-padding: 10 20; -fx-min-width: 180px;" text="Start Game" />
+        <Button onAction="#openTutorial" style="-fx-background-color: #f47c7c; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 5; -fx-padding: 10 20; -fx-min-width: 180px;" text="Tutorial" />
+        <Button onAction="#showLeaderboards" style="-fx-background-color: #f7f48b; -fx-text-fill: black; -fx-font-size: 16px; -fx-background-radius: 5; -fx-padding: 10 20; -fx-min-width: 180px;" text="Leaderboards" />
+        <Button onAction="#exitGame" style="-fx-background-color: #a1de93; -fx-text-fill: black; -fx-font-size: 16px; -fx-background-radius: 5; -fx-padding: 10 20; -fx-min-width: 180px;" text="Exit" />
+    </VBox>
+</AnchorPane>
