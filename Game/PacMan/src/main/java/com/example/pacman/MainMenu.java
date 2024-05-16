@@ -1,304 +1,95 @@
 package com.example.pacman;
 
-import javafx.animation.FadeTransition;
-import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.stage.Stage;
-import javafx.util.Duration;
-
 import javax.swing.*;
-import java.sql.*;
-import java.util.Arrays;
-import java.util.List;
+import java.awt.*;
 
-import java.sql.PreparedStatement;
-public class MainMenu extends Application {
+public class MainMenu extends JFrame {
 
-    private boolean loggedIn = false;
-    private String currentUsername = "";
+    public MainMenu() {
+        // Set up the frame
+        setTitle("Main Menu");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(600, 360); // Updated screen size to 600x360
+        setLocationRelativeTo(null); // Center the frame on the screen
+        setLayout(new BorderLayout());
 
-    @Override
-    public void start(Stage primaryStage) {
-        // Create main window
-        BorderPane root = new BorderPane();
-        Scene scene = new Scene(root, 800, 600);
+        // Create a JLayeredPane
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setPreferredSize(new Dimension(600, 360));
 
-        // Create top menu bar
-        MenuBar menuBar = new MenuBar();
-        Menu fileMenu = new Menu("File");
-        MenuItem exitItem = new MenuItem("Exit");
-        exitItem.setOnAction(e -> exitApplication(primaryStage));
-        fileMenu.getItems().add(exitItem);
-        menuBar.getMenus().add(fileMenu);
-        root.setTop(menuBar);
+        // Add the GIF as the background
+        JLabel background = new JLabel(new ImageIcon("Game/PacMan/src/main/resources/com/example/pacman/Game/Pacman/src/images/temp/ippoMain.gif")); // Change the path to your GIF file
+        background.setBounds(0, 0, 600, 360); // Set bounds for the background label
+        layeredPane.add(background, JLayeredPane.DEFAULT_LAYER); // Add background to the default layer
 
-        // Create main content area
-        VBox mainContent = new VBox(20);
-        mainContent.setAlignment(Pos.CENTER);
-        root.setCenter(mainContent);
+        // Add "LEADERBOARD" text
+        JLabel leaderboardLabel = new JLabel("LEADERBOARD");
+        leaderboardLabel.setBounds(16, 263, 100, 60); // Position and size of the label
+        leaderboardLabel.setFont(new Font("Inter", Font.BOLD, 10)); // Set font
+        leaderboardLabel.setForeground(new Color(0xFFD233)); // Set text color
+        layeredPane.add(leaderboardLabel, JLayeredPane.PALETTE_LAYER); // Add leaderboard label to the palette layer
 
-        // If no accounts created, show account creation tab
-        if (!accountsExist()) {
-            mainContent.getChildren().add(createAccountCreationTab());
-        } else {
-            // Show username at the top
-            Label usernameLabel = new Label("Welcome, " + currentUsername);
-            mainContent.getChildren().add(usernameLabel);
+        // Load and resize the trophy image
+        ImageIcon trophyIcon = new ImageIcon("Game/PacMan/src/images/main_menu/trophy.png"); // Path to the trophy image
+        Image trophyImage = trophyIcon.getImage().getScaledInstance(43, 41, Image.SCALE_SMOOTH); // Resize image
+        trophyIcon = new ImageIcon(trophyImage); // Create new ImageIcon with resized image
+        JLabel trophyLabel = new JLabel(trophyIcon);
+        trophyLabel.setBounds(32, 241, 43, 41); // Position and size of the trophy image
+        layeredPane.add(trophyLabel, JLayeredPane.PALETTE_LAYER); // Add trophy image to the palette layer
 
-            // Add play button
-            Button playButton = new Button("Play");
-            playButton.setOnAction(e -> {
-                // Launch Pacman game
-                launchPacman(primaryStage);
-            });
-            mainContent.getChildren().add(playButton);
+        // Add "PLAY" text
+        JLabel playLabel = new JLabel("PLAY");
+        playLabel.setBounds(31, 68, 100, 20); // Position and size of the label
+        playLabel.setFont(new Font("Inter", Font.BOLD, 12)); // Set font
+        playLabel.setForeground(new Color(0x0FA958)); // Set text color
+        layeredPane.add(playLabel, JLayeredPane.PALETTE_LAYER); // Add play label to the palette layer
 
-            // Add leaderboard button
-            Button leaderboardButton = new Button("Leaderboard");
-            leaderboardButton.setOnAction(e -> {
-                // Show leaderboard
-                showLeaderboard(primaryStage);
-            });
-            mainContent.getChildren().add(leaderboardButton);
+        // Load and resize the play image
+        ImageIcon playIcon = new ImageIcon("Game/PacMan/src/images/main_menu/play.png"); // Path to the play image
+        Image playImage = playIcon.getImage().getScaledInstance(48, 48, Image.SCALE_SMOOTH); // Resize image
+        playIcon = new ImageIcon(playImage); // Create new ImageIcon with resized image
+        JLabel playImageLabel = new JLabel(playIcon);
+        playImageLabel.setBounds(23, 17, 48, 48); // Position and size of the play image
+        layeredPane.add(playImageLabel, JLayeredPane.PALETTE_LAYER); // Add play image to the palette layer
 
-            // Add account button
-            Button accountButton = new Button("Account");
-            accountButton.setOnAction(e -> {
-                // Show account options
-                showAccountOptions(primaryStage);
-            });
-            mainContent.getChildren().add(accountButton);
+        // Add "SETTINGS" text
+        JLabel settingsLabel = new JLabel("SETTINGS");
+        settingsLabel.setBounds(510, 48, 100, 20); // Position and size of the label
+        settingsLabel.setFont(new Font("Inter", Font.BOLD, 10)); // Set font
+        settingsLabel.setForeground(Color.WHITE); // Set text color
+        layeredPane.add(settingsLabel, JLayeredPane.PALETTE_LAYER); // Add settings label to the palette layer
 
-            // Add settings button
-            Button settingsButton = new Button("Settings");
-            settingsButton.setOnAction(e -> {
-                // Show settings
-                showSettings(primaryStage);
-            });
-            mainContent.getChildren().add(settingsButton);
+        // Load and resize the gear image
+        ImageIcon gearIcon = new ImageIcon("Game/PacMan/src/images/main_menu/gear.png"); // Path to the gear image
+        Image gearImage = gearIcon.getImage().getScaledInstance(22, 23, Image.SCALE_SMOOTH); // Resize image
+        gearIcon = new ImageIcon(gearImage); // Create new ImageIcon with resized image
+        JLabel gearLabel = new JLabel(gearIcon);
+        gearLabel.setBounds(524, 23, 22, 23); // Position and size of the gear image
+        layeredPane.add(gearLabel, JLayeredPane.PALETTE_LAYER); // Add gear image to the palette layer
 
-            // Add exit button
-            Button exitButton = new Button("Exit");
-            exitButton.setOnAction(e -> exitApplication(primaryStage));
-            mainContent.getChildren().add(exitButton);
-        }
+        // Add "QUIT" text
+        JLabel quitLabel = new JLabel("QUIT");
+        quitLabel.setBounds(524, 281, 100, 20); // Position and size of the label
+        quitLabel.setFont(new Font("Inter", Font.BOLD, 12)); // Set font
+        quitLabel.setForeground(new Color(0xF24E1E)); // Set text color
+        layeredPane.add(quitLabel, JLayeredPane.PALETTE_LAYER); // Add quit label to the palette layer
 
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Pacman Main Menu");
-        primaryStage.show();
-    }
+        // Load and resize the quit image
+        ImageIcon quitIcon = new ImageIcon("Game/PacMan/src/images/main_menu/quit.png"); // Path to the quit image
+        Image quitImage = quitIcon.getImage().getScaledInstance(42, 42, Image.SCALE_SMOOTH); // Resize image
+        quitIcon = new ImageIcon(quitImage); // Create new ImageIcon with resized image
+        JLabel quitImageLabel = new JLabel(quitIcon);
+        quitImageLabel.setBounds(518, 240, 42, 42); // Position and size of the quit image
+        layeredPane.add(quitImageLabel, JLayeredPane.PALETTE_LAYER); // Add quit image to the palette layer
 
-    private VBox createAccountCreationTab() {
-        VBox accountCreationContent = new VBox(20);
-        accountCreationContent.setAlignment(Pos.CENTER);
+        // Add the layeredPane to the frame
+        add(layeredPane, BorderLayout.CENTER);
 
-        // Account creation form elements
-        TextField usernameInput = new TextField();
-        Button createAccountButton = new Button("Create Account");
-
-        createAccountButton.setOnAction(e -> {
-            String username = usernameInput.getText();
-            // Create new account in database
-            if (createAccount(username)) {
-                // Set current username and mark as logged in
-                currentUsername = username;
-                loggedIn = true;
-                // Reload menu to show logged-in state
-                start(new Stage());
-            } else {
-                // Display error message
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Failed to create account.");
-                alert.showAndWait();
-            }
-        });
-
-        // Add elements to tab content
-        accountCreationContent.getChildren().addAll(
-                new Label("Enter username:"), usernameInput,
-                createAccountButton
-        );
-
-        return accountCreationContent;
-    }
-
-    private void showLeaderboard(Stage primaryStage) {
-        // Create leaderboard window
-        Stage leaderboardStage = new Stage();
-        VBox leaderboardLayout = new VBox(10);
-        leaderboardLayout.setPadding(new Insets(20));
-        Label titleLabel = new Label("Leaderboard");
-        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-
-        // Example leaderboard data
-        List<String> leaderboardData = Arrays.asList(
-                "1. John - 5000",
-                "2. Alice - 4500",
-                "3. Bob - 4000"
-        );
-        ListView<String> leaderboardListView = new ListView<>(FXCollections.observableArrayList(leaderboardData));
-
-        leaderboardLayout.getChildren().addAll(titleLabel, leaderboardListView);
-        Scene leaderboardScene = new Scene(leaderboardLayout, 300, 200);
-        leaderboardStage.setScene(leaderboardScene);
-        leaderboardStage.setTitle("Leaderboard");
-        leaderboardStage.show();
-    }
-
-    private void showAccountOptions(Stage primaryStage) {
-        // Create account options window
-        Stage accountOptionsStage = new Stage();
-        VBox accountOptionsLayout = new VBox(10);
-        accountOptionsLayout.setPadding(new Insets(20));
-        Label titleLabel = new Label("Account Options");
-        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-
-        // Add account option buttons
-        Button backButton = new Button("Back");
-        backButton.setOnAction(e -> accountOptionsStage.close());
-
-        Button createButton = new Button("Create Account");
-        createButton.setOnAction(e -> {
-            // Implement create account functionality
-        });
-
-        Button editButton = new Button("Edit Account");
-        editButton.setOnAction(e -> {
-            // Implement edit account functionality
-        });
-
-        Button deleteButton = new Button("Delete Account");
-        deleteButton.setOnAction(e -> {
-            // Implement delete account functionality
-        });
-
-        accountOptionsLayout.getChildren().addAll(titleLabel, backButton, createButton, editButton, deleteButton);
-        Scene accountOptionsScene = new Scene(accountOptionsLayout, 300, 200);
-        accountOptionsStage.setScene(accountOptionsScene);
-        accountOptionsStage.setTitle("Account Options");
-        accountOptionsStage.show();
-    }
-
-    private void showSettings(Stage primaryStage) {
-        // Create settings window
-        Stage settingsStage = new Stage();
-        VBox settingsLayout = new VBox(10);
-        settingsLayout.setPadding(new Insets(20));
-        Label titleLabel = new Label("Settings");
-        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-
-        // Add settings components
-        CheckBox muteCheckBox = new CheckBox("Mute");
-        Slider volumeSlider = new Slider(0, 100, 50);
-        Button saveButton = new Button("Save");
-
-        settingsLayout.getChildren().addAll(titleLabel, muteCheckBox, volumeSlider, saveButton);
-        Scene settingsScene = new Scene(settingsLayout, 300, 200);
-        settingsStage.setScene(settingsScene);
-        settingsStage.setTitle("Settings");
-        settingsStage.show();
-    }
-
-    private void launchPacman(Stage primaryStage) {
-        // Launch Pacman game
-        Pacman pac = new Pacman();
-        pac.setVisible(true);
-        pac.setTitle("Pacman");
-        pac.setSize(380, 420);
-        pac.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        pac.setLocationRelativeTo(null);
-    }
-
-    private boolean accountsExist() {
-        try {
-            // Establish a database connection
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/pacmanaccounts", "username", "password");
-
-            // Prepare a statement to query the database
-            String query = "SELECT COUNT(*) FROM users";
-            PreparedStatement stmt = conn.prepareStatement(query);
-
-            // Execute the query
-            ResultSet rs = stmt.executeQuery();
-
-            // Get the count of accounts
-            rs.next();
-            int count = rs.getInt(1);
-
-            // Close resources
-            rs.close();
-            stmt.close();
-            conn.close();
-
-            // Return true if there are accounts, false otherwise
-            return count > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // Return false in case of any error
-            return false;
-        }
-    }
-
-    private boolean createAccount(String username) {
-        try {
-            // Establish a database connection
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/pacmanaccounts", "username", "password");
-
-            // Prepare a statement to insert into the database
-            String query = "INSERT INTO users (username) VALUES (?)";
-            PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, username);
-
-            // Execute the update
-            int rowsInserted = stmt.executeUpdate();
-
-            // Close resources
-            stmt.close();
-            conn.close();
-
-            // Return true if the account was successfully created, false otherwise
-            return rowsInserted > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // Return false in case of any error
-            return false;
-        }
-    }
-
-    private void exitApplication(Stage primaryStage) {
-        // Prompt user before exiting
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Exit");
-        alert.setHeaderText(null);
-        alert.setContentText("Are you sure you want to exit?");
-        ButtonType yesButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
-        ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.NO);
-        alert.getButtonTypes().setAll(yesButton, noButton);
-
-        // Fade out transition
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(500), primaryStage.getScene().getRoot());
-        fadeOut.setFromValue(1);
-        fadeOut.setToValue(0);
-        fadeOut.setOnFinished(e -> System.exit(0));
-
-        // Handle user response
-        alert.showAndWait().ifPresent(response -> {
-            if (response == yesButton) {
-                fadeOut.play();
-            }
-        });
+        // Make the frame visible
+        setVisible(true);
     }
 
     public static void main(String[] args) {
-        launch(args);
+        SwingUtilities.invokeLater(() -> new MainMenu());
     }
 }
