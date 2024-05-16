@@ -2,6 +2,9 @@ package com.example.pacman;
 
 import javax.swing.*;
 import java.awt.*;
+import javax.swing.border.Border;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class MainMenu extends JFrame {
 
@@ -39,7 +42,7 @@ public class MainMenu extends JFrame {
 
         // Add "PLAY" text
         JLabel playLabel = new JLabel("PLAY");
-        playLabel.setBounds(31, 68, 100, 20); // Position and size of the label
+        playLabel.setBounds(31, 65, 100, 20); // Position and size of the label
         playLabel.setFont(new Font("Inter", Font.BOLD, 12)); // Set font
         playLabel.setForeground(new Color(0x0FA958)); // Set text color
         layeredPane.add(playLabel, JLayeredPane.PALETTE_LAYER); // Add play label to the palette layer
@@ -54,7 +57,7 @@ public class MainMenu extends JFrame {
 
         // Add "SETTINGS" text
         JLabel settingsLabel = new JLabel("SETTINGS");
-        settingsLabel.setBounds(510, 48, 100, 20); // Position and size of the label
+        settingsLabel.setBounds(510, 49, 100, 20); // Position and size of the label
         settingsLabel.setFont(new Font("Inter", Font.BOLD, 10)); // Set font
         settingsLabel.setForeground(Color.WHITE); // Set text color
         layeredPane.add(settingsLabel, JLayeredPane.PALETTE_LAYER); // Add settings label to the palette layer
@@ -79,8 +82,24 @@ public class MainMenu extends JFrame {
         Image quitImage = quitIcon.getImage().getScaledInstance(42, 42, Image.SCALE_SMOOTH); // Resize image
         quitIcon = new ImageIcon(quitImage); // Create new ImageIcon with resized image
         JLabel quitImageLabel = new JLabel(quitIcon);
-        quitImageLabel.setBounds(518, 240, 42, 42); // Position and size of the quit image
+        quitImageLabel.setBounds(518, 239, 42, 42); // Position and size of the quit image
         layeredPane.add(quitImageLabel, JLayeredPane.PALETTE_LAYER); // Add quit image to the palette layer
+
+        // Create the settings panel
+        JPanel settingsPanel = new JPanel();
+        settingsPanel.setBounds(131, 20, 338, 284);
+        settingsPanel.setBackground(new Color(217, 217, 217, 204)); // Background color with opacity
+        settingsPanel.setBorder(new RoundedBorder(16)); // Set rounded border
+        settingsPanel.setVisible(false); // Initially hidden
+        layeredPane.add(settingsPanel, JLayeredPane.MODAL_LAYER); // Add settings panel to the modal layer
+
+        // Add mouse listener to gear icon to show/hide settings panel
+        gearLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                settingsPanel.setVisible(!settingsPanel.isVisible());
+            }
+        });
 
         // Add the layeredPane to the frame
         add(layeredPane, BorderLayout.CENTER);
@@ -91,5 +110,26 @@ public class MainMenu extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new MainMenu());
+    }
+}
+
+// Custom border class to create rounded borders
+class RoundedBorder implements Border {
+    private int radius;
+
+    RoundedBorder(int radius) {
+        this.radius = radius;
+    }
+
+    public Insets getBorderInsets(Component c) {
+        return new Insets(this.radius + 1, this.radius + 1, this.radius + 2, this.radius);
+    }
+
+    public boolean isBorderOpaque() {
+        return true;
+    }
+
+    public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+        g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
     }
 }
