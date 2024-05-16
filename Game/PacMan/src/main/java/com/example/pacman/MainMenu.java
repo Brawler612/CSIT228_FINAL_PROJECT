@@ -12,7 +12,7 @@ public class MainMenu extends JFrame {
         // Set up the frame
         setTitle("Main Menu");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 360); // Updated screen size to 600x360
+        setSize(614, 397); // Updated screen size to 600x360
         setLocationRelativeTo(null); // Center the frame on the screen
         setLayout(new BorderLayout());
 
@@ -27,7 +27,7 @@ public class MainMenu extends JFrame {
 
         // Add "LEADERBOARD" text
         JLabel leaderboardLabel = new JLabel("LEADERBOARD");
-        leaderboardLabel.setBounds(16, 263, 100, 60); // Position and size of the label
+        leaderboardLabel.setBounds(22, 303, 100, 60); // Position and size of the label
         leaderboardLabel.setFont(new Font("Inter", Font.BOLD, 10)); // Set font
         leaderboardLabel.setForeground(new Color(0xFFD233)); // Set text color
         layeredPane.add(leaderboardLabel, JLayeredPane.PALETTE_LAYER); // Add leaderboard label to the palette layer
@@ -37,7 +37,7 @@ public class MainMenu extends JFrame {
         Image trophyImage = trophyIcon.getImage().getScaledInstance(43, 41, Image.SCALE_SMOOTH); // Resize image
         trophyIcon = new ImageIcon(trophyImage); // Create new ImageIcon with resized image
         JLabel trophyLabel = new JLabel(trophyIcon);
-        trophyLabel.setBounds(32, 241, 43, 41); // Position and size of the trophy image
+        trophyLabel.setBounds(36, 281, 43, 41); // Position and size of the trophy image
         layeredPane.add(trophyLabel, JLayeredPane.PALETTE_LAYER); // Add trophy image to the palette layer
 
         // Add "PLAY" text
@@ -72,7 +72,7 @@ public class MainMenu extends JFrame {
 
         // Add "QUIT" text
         JLabel quitLabel = new JLabel("QUIT");
-        quitLabel.setBounds(524, 281, 100, 20); // Position and size of the label
+        quitLabel.setBounds(524, 321, 100, 20); // Position and size of the label
         quitLabel.setFont(new Font("Inter", Font.BOLD, 12)); // Set font
         quitLabel.setForeground(new Color(0xF24E1E)); // Set text color
         layeredPane.add(quitLabel, JLayeredPane.PALETTE_LAYER); // Add quit label to the palette layer
@@ -82,12 +82,16 @@ public class MainMenu extends JFrame {
         Image quitImage = quitIcon.getImage().getScaledInstance(42, 42, Image.SCALE_SMOOTH); // Resize image
         quitIcon = new ImageIcon(quitImage); // Create new ImageIcon with resized image
         JLabel quitImageLabel = new JLabel(quitIcon);
-        quitImageLabel.setBounds(518, 239, 42, 42); // Position and size of the quit image
+        quitImageLabel.setBounds(518, 279, 42, 42); // Position and size of the quit image
         layeredPane.add(quitImageLabel, JLayeredPane.PALETTE_LAYER); // Add quit image to the palette layer
 
         // Create the settings panel
+        int settingsPanelWidth = 330;
+        int settingsPanelHeight = 290;
+        int settingsPanelX = (600 - settingsPanelWidth) / 2;
+        int settingsPanelY = (360 - settingsPanelHeight) / 2;
         JPanel settingsPanel = new JPanel();
-        settingsPanel.setBounds(131, 20, 338, 284);
+        settingsPanel.setBounds(settingsPanelX, settingsPanelY, settingsPanelWidth, settingsPanelHeight);
         settingsPanel.setBackground(new Color(217, 217, 217, 204)); // Background color with opacity
         settingsPanel.setBorder(new RoundedBorder(16)); // Set rounded border
         settingsPanel.setVisible(false); // Initially hidden
@@ -98,6 +102,44 @@ public class MainMenu extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 settingsPanel.setVisible(!settingsPanel.isVisible());
+            }
+        });
+
+        // Add mouse listener to settings label to show/hide settings panel
+        settingsLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                settingsPanel.setVisible(!settingsPanel.isVisible());
+            }
+        });
+
+        // Add mouse listener to play image to load Pacman.java
+        playImageLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // Open Pacman.java
+                Pacman pac = new Pacman();
+                pac.setVisible(true);
+                pac.setTitle("Pacman");
+                pac.setSize(380, 420);
+                pac.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                pac.setLocationRelativeTo(null);
+                setVisible(false); // Hide the current MainMenu frame
+            }
+        });
+
+        // Add mouse listener to play label to load Pacman.java
+        playLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // Open Pacman.java
+                Pacman pac = new Pacman();
+                pac.setVisible(true);
+                pac.setTitle("Pacman");
+                pac.setSize(380, 420);
+                pac.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                pac.setLocationRelativeTo(null);
+                setVisible(false); // Hide the current MainMenu frame
             }
         });
 
