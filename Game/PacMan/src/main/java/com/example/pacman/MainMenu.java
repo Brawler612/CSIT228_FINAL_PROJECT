@@ -97,6 +97,18 @@ public class MainMenu extends JFrame {
         settingsPanel.setVisible(false); // Initially hidden
         layeredPane.add(settingsPanel, JLayeredPane.MODAL_LAYER); // Add settings panel to the modal layer
 
+        // Create the leaderboard panel
+        int leaderboardPanelWidth = 330;
+        int leaderboardPanelHeight = 290;
+        int leaderboardPanelX = (600 - settingsPanelWidth) / 2;
+        int leaderboardPanelY = (360 - settingsPanelHeight) / 2;
+        JPanel leaderboardPanel = new JPanel();
+        leaderboardPanel.setBounds(leaderboardPanelX, leaderboardPanelY, leaderboardPanelWidth, leaderboardPanelHeight);
+        leaderboardPanel.setBackground(new Color(217, 217, 217, 204)); // Background color with opacity
+        leaderboardPanel.setBorder(new RoundedBorder(16)); // Set rounded border
+        leaderboardPanel.setVisible(false); // Initially hidden
+        layeredPane.add(leaderboardPanel, JLayeredPane.MODAL_LAYER); // Add leaderboard panel to the modal layer
+
         // Add mouse listener to gear icon to show/hide settings panel
         gearLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -110,6 +122,22 @@ public class MainMenu extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 settingsPanel.setVisible(!settingsPanel.isVisible());
+            }
+        });
+
+        // Add mouse listener to trophy icon to show/hide leaderboard panel
+        trophyLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                leaderboardPanel.setVisible(!leaderboardPanel.isVisible());
+            }
+        });
+
+        // Add mouse listener to leaderboard label to show/hide leaderboard panel
+        leaderboardLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                leaderboardPanel.setVisible(!leaderboardPanel.isVisible());
             }
         });
 
@@ -175,3 +203,5 @@ class RoundedBorder implements Border {
         g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
     }
 }
+
+
