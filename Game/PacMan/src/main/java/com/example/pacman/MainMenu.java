@@ -21,7 +21,7 @@ public class MainMenu extends JFrame {
         layeredPane.setPreferredSize(new Dimension(600, 360));
 
         // Add the GIF as the background
-        JLabel background = new JLabel(new ImageIcon("Game/PacMan/src/main/resources/com/example/pacman/Game/Pacman/src/images/temp/ippoMain.gif")); // Change the path to your GIF file
+        JLabel background = new JLabel(new ImageIcon("Game/PacMan/src/images/temp/ippoMain.gif")); // Change the path to your GIF file
         background.setBounds(0, 0, 600, 360); // Set bounds for the background label
         layeredPane.add(background, JLayeredPane.DEFAULT_LAYER); // Add background to the default layer
 
