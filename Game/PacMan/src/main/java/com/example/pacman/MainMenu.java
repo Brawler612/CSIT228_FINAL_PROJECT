@@ -170,6 +170,21 @@ public class MainMenu extends JFrame {
                 setVisible(false); // Hide the current MainMenu frame
             }
         });
+        quitImageLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.exit(0);
+            }
+        });
+
+        // Add mouse listener to quit label to exit the game
+        quitLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.exit(0);
+            }
+        });
+
 
         // Add the layeredPane to the frame
         add(layeredPane, BorderLayout.CENTER);
