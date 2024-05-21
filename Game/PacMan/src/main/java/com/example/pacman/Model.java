@@ -32,6 +32,7 @@ public class Model extends JPanel implements ActionListener {
 
     private int pacman_x, pacman_y, pacmand_x, pacmand_y;
     private int req_dx, req_dy;
+    private boolean[] ghostsAlive;
 
     private final short[] levelData = {
             19, 18, 18, 18, 26, 26, 26, 26, 26, 26, 26, 18, 18, 18, 22,
@@ -78,7 +79,6 @@ public class Model extends JPanel implements ActionListener {
 
     }
     private void initVariables() {
-
         screenData = new short[N_BLOCKS * N_BLOCKS];
         d = new Dimension(400, 400);
         ghost_x = new int[MAX_GHOSTS];
@@ -86,6 +86,7 @@ public class Model extends JPanel implements ActionListener {
         ghost_y = new int[MAX_GHOSTS];
         ghost_dy = new int[MAX_GHOSTS];
         ghostSpeed = new int[MAX_GHOSTS];
+        ghostsAlive = new boolean[MAX_GHOSTS];
         dx = new int[4];
         dy = new int[4];
 
@@ -94,19 +95,31 @@ public class Model extends JPanel implements ActionListener {
     }
 
     private void playGame(Graphics2D g2d) {
-
         if (dying) {
-
             death();
-
         } else {
-
             movePacman();
             drawPacman(g2d);
             moveGhosts(g2d);
             checkMaze();
+            checkAllGhostsEaten(); // New method to check if all ghosts are eaten
         }
     }
+
+    private void checkAllGhostsEaten() {
+        boolean allEaten = true;
+        for (int i = 0; i < N_GHOSTS; i++) {
+            if (ghostsAlive[i]) {
+                allEaten = false;
+                break;
+            }
+        }
+        if (allEaten) {
+            score += 50; // Bonus for eating all ghosts
+            initLevel(); // Initialize next level
+        }
+    }
+
 
     private void showIntroScreen(Graphics2D g2d) {
 
@@ -168,11 +181,14 @@ public class Model extends JPanel implements ActionListener {
     }
 
     private void moveGhosts(Graphics2D g2d) {
-
         int pos;
         int count;
 
         for (int i = 0; i < N_GHOSTS; i++) {
+            if (!ghostsAlive[i]) {
+                continue; // Skip the ghost if it is not alive
+            }
+
             if (ghost_x[i] % BLOCK_SIZE == 0 && ghost_y[i] % BLOCK_SIZE == 0) {
                 pos = ghost_x[i] / BLOCK_SIZE + N_BLOCKS * (int) (ghost_y[i] / BLOCK_SIZE);
 
@@ -203,7 +219,6 @@ public class Model extends JPanel implements ActionListener {
                 }
 
                 if (count == 0) {
-
                     if ((screenData[pos] & 15) == 15) {
                         ghost_dx[i] = 0;
                         ghost_dy[i] = 0;
@@ -211,19 +226,14 @@ public class Model extends JPanel implements ActionListener {
                         ghost_dx[i] = -ghost_dx[i];
                         ghost_dy[i] = -ghost_dy[i];
                     }
-
                 } else {
-
                     count = (int) (Math.random() * count);
-
                     if (count > 3) {
                         count = 3;
                     }
-
                     ghost_dx[i] = dx[count];
                     ghost_dy[i] = dy[count];
                 }
-
             }
 
             ghost_x[i] = ghost_x[i] + (ghost_dx[i] * ghostSpeed[i]);
@@ -233,15 +243,19 @@ public class Model extends JPanel implements ActionListener {
             if (pacman_x > (ghost_x[i] - 12) && pacman_x < (ghost_x[i] + 12)
                     && pacman_y > (ghost_y[i] - 12) && pacman_y < (ghost_y[i] + 12)
                     && inGame) {
-
-                dying = true;
+                // Pacman eats the ghost
+                score += 10; // Increase score
+                ghostsAlive[i] = false; // Mark the ghost as not alive
             }
         }
     }
 
     private void drawGhost(Graphics2D g2d, int x, int y) {
-        g2d.drawImage(ghost, x, y, this);
+        if (g2d != null) {
+            g2d.drawImage(ghost, x, y, this);
+        }
     }
+
 
     private void movePacman() {
 
@@ -344,10 +358,12 @@ public class Model extends JPanel implements ActionListener {
     }
 
     private void initLevel() {
-
-        int i;
-        for (i = 0; i < N_BLOCKS * N_BLOCKS; i++) {
+        for (int i = 0; i < N_BLOCKS * N_BLOCKS; i++) {
             screenData[i] = levelData[i];
+        }
+
+        for (int i = 0; i < N_GHOSTS; i++) {
+            ghostsAlive[i] = true;
         }
 
         continueLevel();
