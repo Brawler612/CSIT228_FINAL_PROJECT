@@ -393,7 +393,6 @@ public class Model extends JPanel implements ActionListener {
 
         // Increment the level variable
         level++;
-        startTimer();
     }
 
 

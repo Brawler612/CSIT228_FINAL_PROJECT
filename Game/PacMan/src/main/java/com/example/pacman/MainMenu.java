@@ -2,13 +2,17 @@ package com.example.pacman;
 
 import javax.swing.*;
 import java.awt.*;
-import javax.swing.border.Border;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 public class MainMenu extends JFrame {
+    private Leaderboards leaderboards;
 
     public MainMenu() {
+        // Initialize the leaderboards
+        leaderboards = new Leaderboards();
+
         // Set up the frame
         setTitle("Main Menu");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -100,14 +104,22 @@ public class MainMenu extends JFrame {
         // Create the leaderboard panel
         int leaderboardPanelWidth = 330;
         int leaderboardPanelHeight = 290;
-        int leaderboardPanelX = (600 - settingsPanelWidth) / 2;
-        int leaderboardPanelY = (360 - settingsPanelHeight) / 2;
+        int leaderboardPanelX = (600 - leaderboardPanelWidth) / 2;
+        int leaderboardPanelY = (360 - leaderboardPanelHeight) / 2;
         JPanel leaderboardPanel = new JPanel();
         leaderboardPanel.setBounds(leaderboardPanelX, leaderboardPanelY, leaderboardPanelWidth, leaderboardPanelHeight);
         leaderboardPanel.setBackground(new Color(217, 217, 217, 204)); // Background color with opacity
         leaderboardPanel.setBorder(new RoundedBorder(16)); // Set rounded border
         leaderboardPanel.setVisible(false); // Initially hidden
         layeredPane.add(leaderboardPanel, JLayeredPane.MODAL_LAYER); // Add leaderboard panel to the modal layer
+
+        // Add leaderboard data to the panel
+        leaderboardPanel.setLayout(new BoxLayout(leaderboardPanel, BoxLayout.Y_AXIS));
+        List<String> topScores = leaderboards.getTopScores(10);
+        for (String score : topScores) {
+            JLabel scoreLabel = new JLabel(score);
+            leaderboardPanel.add(scoreLabel);
+        }
 
         // Add mouse listener to gear icon to show/hide settings panel
         gearLabel.addMouseListener(new MouseAdapter() {
@@ -145,14 +157,7 @@ public class MainMenu extends JFrame {
         playImageLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Open Pacman.java
-                Pacman pac = new Pacman();
-                pac.setVisible(true);
-                pac.setTitle("Pacman");
-                pac.setSize(380, 420);
-                pac.setDefaultCloseOperation(EXIT_ON_CLOSE);
-                pac.setLocationRelativeTo(null);
-                setVisible(false); // Hide the current MainMenu frame
+                Pacman.main(null); // Load Pacman.java
             }
         });
 
@@ -160,63 +165,31 @@ public class MainMenu extends JFrame {
         playLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Open Pacman.java
-                Pacman pac = new Pacman();
-                pac.setVisible(true);
-                pac.setTitle("Pacman");
-                pac.setSize(380, 420);
-                pac.setDefaultCloseOperation(EXIT_ON_CLOSE);
-                pac.setLocationRelativeTo(null);
-                setVisible(false); // Hide the current MainMenu frame
+                Pacman.main(null); // Load Pacman.java
             }
         });
+
+        // Add mouse listener to quit image to exit the program
         quitImageLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.exit(0);
+                System.exit(0); // Exit the program
             }
         });
 
-        // Add mouse listener to quit label to exit the game
+        // Add mouse listener to quit label to exit the program
         quitLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.exit(0);
+                System.exit(0); // Exit the program
             }
         });
 
-
-        // Add the layeredPane to the frame
-        add(layeredPane, BorderLayout.CENTER);
-
-        // Make the frame visible
-        setVisible(true);
+        add(layeredPane, BorderLayout.CENTER); // Add layeredPane to the frame
+        setVisible(true); // Make the frame visible
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new MainMenu());
     }
 }
-
-// Custom border class to create rounded borders
-class RoundedBorder implements Border {
-    private int radius;
-
-    RoundedBorder(int radius) {
-        this.radius = radius;
-    }
-
-    public Insets getBorderInsets(Component c) {
-        return new Insets(this.radius + 1, this.radius + 1, this.radius + 2, this.radius);
-    }
-
-    public boolean isBorderOpaque() {
-        return true;
-    }
-
-    public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-        g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
-    }
-}
-
-
