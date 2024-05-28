@@ -96,7 +96,7 @@ public class Model extends JPanel implements ActionListener {
 
 
     private void loadImages() {
-        down = new ImageIcon("Game/PacMan/src/images/down.gif").getImage();
+        down = new ImageIcon("Game/PacMan/src/down.gif").getImage();
         up = new ImageIcon("Game/PacMan/src/images/up.gif").getImage();
         left = new ImageIcon("Game/PacMan/src/images/left.gif").getImage();
         right = new ImageIcon("Game/PacMan/src/images/right.gif").getImage();
