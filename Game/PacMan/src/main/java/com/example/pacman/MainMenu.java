@@ -14,7 +14,7 @@ public class MainMenu extends JFrame {
         leaderboards = new Leaderboards();
 
         // Set up the frame
-        setTitle("Main Menu");
+        setTitle("Attack on PacMan");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(614, 397); // Updated screen size to 600x360
         setLocationRelativeTo(null); // Center the frame on the screen
