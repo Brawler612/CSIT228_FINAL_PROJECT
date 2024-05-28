@@ -16,7 +16,7 @@ public class Model extends JPanel implements ActionListener {
     private boolean inGame = false;
     private boolean dying = false;
 
-    private final int BLOCK_SIZE = 24;
+    private final int BLOCK_SIZE = 48;
     private final int N_BLOCKS = 15;
     private int remainingTimeInSeconds = 30;
     private final Timer gameTimer;
