@@ -18,14 +18,17 @@ public class Model extends JPanel implements ActionListener {
 
     private final int BLOCK_SIZE = 24;
     private final int N_BLOCKS = 15;
+    private int remainingTimeInSeconds = 30;
+    private final Timer gameTimer;
     private final int SCREEN_SIZE = N_BLOCKS * BLOCK_SIZE;
-    private final int MAX_GHOSTS = 12;
+    private final int MAX_GHOSTS = 17;
     private final int PACMAN_SPEED = 6;
 
-    private int N_GHOSTS = 6;
-    private int lives, score;
+    private int N_GHOSTS = 11;
+    private int lives;
     private int[] dx, dy;
     private int[] ghost_x, ghost_y, ghost_dx, ghost_dy, ghostSpeed;
+    private int level = 1;
 
     private Image heart, ghost;
     private Image up, down, left, right;
@@ -66,7 +69,30 @@ public class Model extends JPanel implements ActionListener {
         addKeyListener(new TAdapter());
         setFocusable(true);
         initGame();
+        gameTimer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                remainingTimeInSeconds--;
+                if (remainingTimeInSeconds <= 0) {
+                    endGame(); // Implement this method to end the game
+                }
+            }
+        });
     }
+    private void endGame() {
+        inGame = false;
+        // Implement any other actions to end the game
+    }
+
+    private void startTimer() {
+        remainingTimeInSeconds = 30; // Reset timer
+        gameTimer.start();
+    }
+
+    private void stopTimer() {
+        gameTimer.stop();
+    }
+
 
 
     private void loadImages() {
@@ -106,6 +132,7 @@ public class Model extends JPanel implements ActionListener {
         }
     }
 
+
     private void checkAllGhostsEaten() {
         boolean allEaten = true;
         for (int i = 0; i < N_GHOSTS; i++) {
@@ -115,7 +142,6 @@ public class Model extends JPanel implements ActionListener {
             }
         }
         if (allEaten) {
-            score += 50; // Bonus for eating all ghosts
             initLevel(); // Initialize next level
         }
     }
@@ -128,16 +154,17 @@ public class Model extends JPanel implements ActionListener {
         g2d.drawString(start, (SCREEN_SIZE)/4, 150);
     }
 
-    private void drawScore(Graphics2D g) {
+    private void drawTimer(Graphics2D g) {
         g.setFont(smallFont);
         g.setColor(new Color(5, 181, 79));
-        String s = "Score: " + score;
+        String s = "Time: " + remainingTimeInSeconds; // Display remaining time
         g.drawString(s, SCREEN_SIZE / 2 + 96, SCREEN_SIZE + 16);
 
         for (int i = 0; i < lives; i++) {
             g.drawImage(heart, i * 28 + 8, SCREEN_SIZE + 1, this);
         }
     }
+
 
     private void checkMaze() {
 
@@ -154,8 +181,6 @@ public class Model extends JPanel implements ActionListener {
         }
 
         if (finished) {
-
-            score += 50;
 
             if (N_GHOSTS < MAX_GHOSTS) {
                 N_GHOSTS++;
@@ -244,7 +269,6 @@ public class Model extends JPanel implements ActionListener {
                     && pacman_y > (ghost_y[i] - 12) && pacman_y < (ghost_y[i] + 12)
                     && inGame) {
                 // Pacman eats the ghost
-                score += 10; // Increase score
                 ghostsAlive[i] = false; // Mark the ghost as not alive
             }
         }
@@ -268,7 +292,6 @@ public class Model extends JPanel implements ActionListener {
 
             if ((ch & 16) != 0) {
                 screenData[pos] = (short) (ch & 15);
-                score++;
             }
 
             if (req_dx != 0 || req_dy != 0) {
@@ -345,13 +368,13 @@ public class Model extends JPanel implements ActionListener {
                 i++;
             }
         }
+
     }
 
 
     private void initGame() {
 
         lives = 3;
-        score = 0;
         initLevel();
         N_GHOSTS = 6;
         currentSpeed = 3;
@@ -367,7 +390,12 @@ public class Model extends JPanel implements ActionListener {
         }
 
         continueLevel();
+
+        // Increment the level variable
+        level++;
+        startTimer();
     }
+
 
     private void continueLevel() {
 
@@ -398,6 +426,21 @@ public class Model extends JPanel implements ActionListener {
         req_dy = 0;
         dying = false;
     }
+    private void drawLevel(Graphics2D g2d) {
+        String levelString = "Level " + level;
+        g2d.setColor(Color.white);
+        g2d.setFont(smallFont);
+
+        // Calculate the x-coordinate to center the text horizontally
+        int stringWidth = g2d.getFontMetrics().stringWidth(levelString);
+        int x = (SCREEN_SIZE - stringWidth) / 2;
+
+        // Place the text at a fixed y-coordinate
+        int y = SCREEN_SIZE + 16;
+
+        g2d.drawString(levelString, x, y);
+    }
+
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -410,13 +453,14 @@ public class Model extends JPanel implements ActionListener {
         g2d.fillRect(0, 0, getWidth(), getHeight());
 
         drawMaze(g2d);
-        drawScore(g2d);
+        drawTimer(g2d);
 
         if (inGame) {
             playGame(g2d);
         } else {
             showIntroScreen(g2d);
         }
+        drawLevel(g2d);
 
         Toolkit.getDefaultToolkit().sync();
         g2d.dispose();
@@ -428,6 +472,15 @@ public class Model extends JPanel implements ActionListener {
         public void keyPressed(KeyEvent e) {
 
             int key = e.getKeyCode();
+
+            if (!inGame && key == KeyEvent.VK_SPACE) {
+                inGame = true;
+                initGame();
+                startTimer(); // Start the timer when the game starts
+            } else if (!timer.isRunning() && key == KeyEvent.VK_ESCAPE) {
+                inGame = false;
+                stopTimer(); // Stop the timer if the game is paused
+            }
 
             if (inGame) {
                 if (key == KeyEvent.VK_LEFT) {
@@ -452,6 +505,7 @@ public class Model extends JPanel implements ActionListener {
                 }
             }
         }
+
     }
 
     @Override
