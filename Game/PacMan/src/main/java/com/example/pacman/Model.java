@@ -16,7 +16,7 @@ public class Model extends JPanel implements ActionListener {
     private boolean inGame = false;
     private boolean dying = false;
 
-    private final int BLOCK_SIZE = 24;
+    private final int BLOCK_SIZE = 48;
     private final int N_BLOCKS = 15;
     private int remainingTimeInSeconds = 30;
     private final Timer gameTimer;
@@ -96,10 +96,10 @@ public class Model extends JPanel implements ActionListener {
 
 
     private void loadImages() {
-        down = new ImageIcon("Game/PacMan/src/down.gif").getImage();
-        up = new ImageIcon("Game/PacMan/src/images/up.gif").getImage();
-        left = new ImageIcon("Game/PacMan/src/images/left.gif").getImage();
-        right = new ImageIcon("Game/PacMan/src/images/right.gif").getImage();
+        down = new ImageIcon("Game/PacMan/src/images/down1.gif").getImage();
+        up = new ImageIcon("Game/PacMan/src/images/up1.gif").getImage();
+        left = new ImageIcon("Game/PacMan/src/images/left1.gif").getImage();
+        right = new ImageIcon("Game/PacMan/src/images/right1.gif").getImage();
         ghost = new ImageIcon("Game/PacMan/src/images/ghost.gif").getImage();
         heart = new ImageIcon("Game/PacMan/src/images/heart.png").getImage();
 
@@ -148,11 +148,29 @@ public class Model extends JPanel implements ActionListener {
 
 
     private void showIntroScreen(Graphics2D g2d) {
-
         String start = "Press SPACE to start";
-        g2d.setColor(Color.yellow);
-        g2d.drawString(start, (SCREEN_SIZE)/4, 150);
+        Font largeFont = new Font("Helvetica", Font.BOLD, 24);
+        g2d.setFont(largeFont);
+
+        // Calculate the width and height of the text
+        FontMetrics fm = g2d.getFontMetrics();
+        int textWidth = fm.stringWidth(start);
+        int textHeight = fm.getHeight();
+
+        // Set the position for the text
+        int x = (SCREEN_SIZE - textWidth) / 2;
+        int y = SCREEN_SIZE / 2;
+
+        // Set the background color and draw the rectangle
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(x - 10, y - textHeight + fm.getDescent() - 10, textWidth + 20, textHeight + 20);
+
+        // Set the text color and draw the string
+        g2d.setColor(Color.YELLOW);
+        g2d.drawString(start, x, y);
     }
+
+
 
     private void drawTimer(Graphics2D g) {
         g.setFont(smallFont);
@@ -397,14 +415,18 @@ public class Model extends JPanel implements ActionListener {
 
 
     private void continueLevel() {
-
         int dx = 1;
         int random;
 
-        for (int i = 0; i < N_GHOSTS; i++) {
+        // Calculate the center of the maze
+        int centerX = N_BLOCKS / 2 * BLOCK_SIZE;
+        int centerY = N_BLOCKS / 2 * BLOCK_SIZE;
 
-            ghost_y[i] = 4 * BLOCK_SIZE;
-            ghost_x[i] = 4 * BLOCK_SIZE;
+        for (int i = 0; i < N_GHOSTS; i++) {
+            // Start each ghost at the center of the maze
+            ghost_x[i] = centerX;
+            ghost_y[i] = centerY;
+
             ghost_dy[i] = 0;
             ghost_dx[i] = dx;
             dx = -dx;
@@ -417,6 +439,7 @@ public class Model extends JPanel implements ActionListener {
             ghostSpeed[i] = validSpeeds[random];
         }
 
+        // Reset pacman position and direction
         pacman_x = 7 * BLOCK_SIZE;
         pacman_y = 11 * BLOCK_SIZE;
         pacmand_x = 0;
@@ -425,6 +448,8 @@ public class Model extends JPanel implements ActionListener {
         req_dy = 0;
         dying = false;
     }
+
+
     private void drawLevel(Graphics2D g2d) {
         String levelString = "Level " + level;
         g2d.setColor(Color.white);
