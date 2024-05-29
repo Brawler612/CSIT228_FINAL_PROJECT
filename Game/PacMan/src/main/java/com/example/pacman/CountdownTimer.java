@@ -1,7 +1,9 @@
 package com.example.pacman;
 
+import com.example.pacman.UI.Model;
+
 public class CountdownTimer extends Thread {
-    private Model model;
+    private final Model model;
 
     public CountdownTimer(Model model) {
         this.model = model;

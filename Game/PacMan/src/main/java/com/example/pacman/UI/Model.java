@@ -1,5 +1,7 @@
 package com.example.pacman.UI;
 
+import com.example.pacman.CountdownTimer;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -140,7 +142,7 @@ public class Model extends JPanel implements ActionListener {
     }
 
 
-    void startTimer() {
+    public void startTimer() {
         resetTimer(); // Reset and start the timer
         gameTimer.start();
     }
