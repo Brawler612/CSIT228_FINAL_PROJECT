@@ -5,6 +5,7 @@ import com.example.pacman.Config;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +20,25 @@ public class Leaderboards {
             DB_URL = Config.getInstance().DB_URL;
             USERNAME = Config.getInstance().DB_USER;
             PASSWORD = Config.getInstance().DB_PASSWORD;
+
+
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        }
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD)) {
+            if (conn != null) {
+                Statement stmt = conn.createStatement();
+                String sql = "CREATE TABLE IF NOT EXISTS leaderboard (" +
+                        "id INT AUTO_INCREMENT PRIMARY KEY," +
+                        "player_name VARCHAR(255) NOT NULL," +
+                        "score INT NOT NULL," +
+                        "date TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
+                        ")";
+                stmt.execute(sql);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 
