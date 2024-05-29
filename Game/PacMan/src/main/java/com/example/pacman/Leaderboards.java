@@ -7,13 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Leaderboards {
-    public static final String DB_URL = "jdbc:mysql://localhost:3306/oopdatabase";
-    public static final String USERNAME = "root";
-    public static final String PASSWORD ="";
+    private static String DB_URL;
+    public static String USERNAME = "root";
+    public static String PASSWORD ="";
 
     public Leaderboards() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
+            DB_URL = Config.getInstance().DB_URL;
+            USERNAME = Config.getInstance().DB_USER;
+            PASSWORD = Config.getInstance().DB_PASSWORD;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
