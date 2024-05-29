@@ -23,6 +23,9 @@ public class MainMenu extends JFrame {
     private Clip backgroundMusicClip;
     private FloatControl volumeControl;
 
+    private String username;
+    private int userId;
+
     public MainMenu() {
         // Initialize the leaderboards
         leaderboards = new Leaderboards();
@@ -170,7 +173,10 @@ public class MainMenu extends JFrame {
                     // Establish database connection
                     connection = DriverManager.getConnection(Config.getInstance().DB_URL, Config.getInstance().DB_USER, Config.getInstance().DB_PASSWORD);
                     Create create = new Create();
-                    create.insertLeaderboard(connection, username, 0, 0);
+                    int userId = create.insertLeaderboard(connection, username, 0, 0);
+                    this.userId = userId;
+                    this.username = username;
+                    System.out.println("userId " + userId);
                     connection.close(); // Close the connection after use
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -229,7 +235,7 @@ public class MainMenu extends JFrame {
         playImageLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Pacman.main(null); // Load Pacman.java
+                Pacman.main(new String[]{username, String.valueOf(userId)}); // Load Pacman.java
             }
         });
 
@@ -237,7 +243,7 @@ public class MainMenu extends JFrame {
         playLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Pacman.main(null); // Load Pacman.java
+                Pacman.main(new String[]{username, String.valueOf(userId)}); // Load Pacman.java
             }
         });
 

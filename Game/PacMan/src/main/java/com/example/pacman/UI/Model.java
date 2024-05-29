@@ -1,6 +1,9 @@
 package com.example.pacman.UI;
 
+import com.example.pacman.Config;
 import com.example.pacman.CountdownTimer;
+import com.example.pacman.LeaderBoard.Create;
+import com.example.pacman.LeaderBoard.Update;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,8 +18,14 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class Model extends JPanel implements ActionListener {
+    private Connection connection;
+    private String username;
+    private String userId;
 
     private Dimension d;
     private final Font smallFont = new Font("Arial", Font.BOLD, 14);
@@ -75,7 +84,9 @@ public class Model extends JPanel implements ActionListener {
     private short[] screenData;
     private Timer timer;
 
-    public Model() {
+    public Model(String username, String userId) {
+        this.username = username;
+        this.userId = userId;
         loadImages();
         initVariables();
         initCollisionSound();
@@ -92,6 +103,15 @@ public class Model extends JPanel implements ActionListener {
         });
         initGame();
     }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public String getUserId() {
+        return this.userId;
+    }
+
     private void initCollisionSound() {
         try {
             // Create a File object with the absolute path
@@ -204,17 +224,19 @@ public class Model extends JPanel implements ActionListener {
 
     private void showIntroScreen(Graphics2D g2d) {
         if (!inGame) {
-            String start = "Press SPACE to start";
+            String start = "Press SPACE to start ";
             Font largeFont = new Font("Helvetica", Font.BOLD, 24);
             g2d.setFont(largeFont);
 
             // Calculate the width and height of the text
             FontMetrics fm = g2d.getFontMetrics();
             int textWidth = fm.stringWidth(start);
+            int usernameTextWidth = fm.stringWidth(start);
             int textHeight = fm.getHeight();
 
             // Set the position for the text
             int x = (SCREEN_SIZE - textWidth) / 2;
+            int xUsername = (SCREEN_SIZE - usernameTextWidth) / 2;
             int y = SCREEN_SIZE / 2;
 
             // Set the background color and draw the rectangle
@@ -223,6 +245,7 @@ public class Model extends JPanel implements ActionListener {
 
             // Set the text color and draw the string
             g2d.setColor(Color.YELLOW);
+            g2d.drawString(username, xUsername, y-50); // TODO: center username
             g2d.drawString(start, x, y);
         } else {
             // Countdown when the game has started
@@ -523,6 +546,24 @@ public class Model extends JPanel implements ActionListener {
 
         // Increment the level variable
         level++;
+
+
+
+        try {
+            // Assuming you have a database connection named 'connection'
+            // Establish database connection
+            connection = DriverManager.getConnection(Config.getInstance().DB_URL, Config.getInstance().DB_USER, Config.getInstance().DB_PASSWORD);
+            Update update = new Update();
+            update.updateLeaderboard(connection, Integer.parseInt(getUserId()), getUsername(), level);
+            //int userId = create.insertLeaderboard(connection, username, 0, 0);
+            //this.userId = userId;
+            //this.username = username;
+            //System.out.println("userId " + userId);
+            connection.close(); // Close the connection after use
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            // Handle SQLException as per your application's requirements
+        }
 
         // Adjust the number of ghosts based on the current level
         N_GHOSTS = INITIAL_GHOST_COUNT + (level - 1) + 2; // You can adjust this formula as needed

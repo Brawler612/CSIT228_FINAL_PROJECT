@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class Update {
-    private static final String SQL_UPDATE = "UPDATE leaderboard SET name = ?, score = ? WHERE id = ?";
+    private static final String SQL_UPDATE = "UPDATE leaderboard SET playerName = ?, score = ? WHERE id = ?";
 
     public void updateLeaderboard(Connection connection, int id, String name, int score) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(SQL_UPDATE)) {
