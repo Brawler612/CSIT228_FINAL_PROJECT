@@ -25,10 +25,11 @@ public class Model extends JPanel implements ActionListener {
     private final int PACMAN_SPEED = 6;
 
     private int N_GHOSTS = 11;
+    private int countdown = 3;
     private int lives;
     private int[] dx, dy;
     private int[] ghost_x, ghost_y, ghost_dx, ghost_dy, ghostSpeed;
-    private int level = 1;
+    private int level = 0;
     private boolean gameOver = false;
 
 
@@ -60,7 +61,7 @@ public class Model extends JPanel implements ActionListener {
     private final int validSpeeds[] = {1, 2, 3, 4, 6, 8};
     private final int maxSpeed = 6;
 
-    private int currentSpeed = 3;
+    private int currentSpeed = 4;
     private short[] screenData;
     private Timer timer;
 
@@ -80,6 +81,18 @@ public class Model extends JPanel implements ActionListener {
         });
         initGame();
     }
+    public int getCountdown() {
+        return countdown;
+    }
+    public void decrementCountdown() {
+        countdown--;
+    }
+
+    public void startCountdownTimer() {
+        countdown = 3; // Reset the countdown
+        CountdownTimer countdownTimer = new CountdownTimer(this);
+        countdownTimer.start();
+    }
 
 
     private void endGame() {
@@ -90,7 +103,7 @@ public class Model extends JPanel implements ActionListener {
     }
 
 
-    private void startTimer() {
+    void startTimer() {
         resetTimer(); // Reset and start the timer
         gameTimer.start();
     }
@@ -154,26 +167,52 @@ public class Model extends JPanel implements ActionListener {
 
 
     private void showIntroScreen(Graphics2D g2d) {
-        String start = "Press SPACE to start";
-        Font largeFont = new Font("Helvetica", Font.BOLD, 24);
-        g2d.setFont(largeFont);
+        if (!inGame) {
+            String start = "Press SPACE to start";
+            Font largeFont = new Font("Helvetica", Font.BOLD, 24);
+            g2d.setFont(largeFont);
 
-        // Calculate the width and height of the text
-        FontMetrics fm = g2d.getFontMetrics();
-        int textWidth = fm.stringWidth(start);
-        int textHeight = fm.getHeight();
+            // Calculate the width and height of the text
+            FontMetrics fm = g2d.getFontMetrics();
+            int textWidth = fm.stringWidth(start);
+            int textHeight = fm.getHeight();
 
-        // Set the position for the text
-        int x = (SCREEN_SIZE - textWidth) / 2;
-        int y = SCREEN_SIZE / 2;
+            // Set the position for the text
+            int x = (SCREEN_SIZE - textWidth) / 2;
+            int y = SCREEN_SIZE / 2;
 
-        // Set the background color and draw the rectangle
-        g2d.setColor(Color.BLACK);
-        g2d.fillRect(x - 10, y - textHeight + fm.getDescent() - 10, textWidth + 20, textHeight + 20);
+            // Set the background color and draw the rectangle
+            g2d.setColor(Color.BLACK);
+            g2d.fillRect(x - 10, y - textHeight + fm.getDescent() - 10, textWidth + 20, textHeight + 20);
 
-        // Set the text color and draw the string
-        g2d.setColor(Color.YELLOW);
-        g2d.drawString(start, x, y);
+            // Set the text color and draw the string
+            g2d.setColor(Color.YELLOW);
+            g2d.drawString(start, x, y);
+        } else {
+            // Countdown when the game has started
+            if (countdown > 0) {
+                String countdownMsg = "Starting in " + countdown;
+                Font smallFont = new Font("Helvetica", Font.BOLD, 18);
+                g2d.setFont(smallFont);
+
+                // Calculate the width and height of the text
+                FontMetrics fm = g2d.getFontMetrics();
+                int textWidth = fm.stringWidth(countdownMsg);
+                int textHeight = fm.getHeight();
+
+                // Set the position for the text
+                int x = (SCREEN_SIZE - textWidth) / 2;
+                int y = SCREEN_SIZE / 2 + textHeight + 20;
+
+                // Set the background color and draw the rectangle
+                g2d.setColor(Color.BLACK);
+                g2d.fillRect(x - 10, y - textHeight + fm.getDescent() - 10, textWidth + 20, textHeight + 20);
+
+                // Set the text color and draw the string
+                g2d.setColor(Color.YELLOW);
+                g2d.drawString(countdownMsg, x, y);
+            }
+        }
     }
 
     private void resetTimer() {
@@ -195,6 +234,7 @@ public class Model extends JPanel implements ActionListener {
             g.drawImage(heart, i * 28 + 8, SCREEN_SIZE + 1, this);
         }
     }
+
 
 
     private void checkMaze() {
@@ -313,7 +353,6 @@ public class Model extends JPanel implements ActionListener {
 
 
     private void movePacman() {
-
         int pos;
         short ch;
 
@@ -321,9 +360,12 @@ public class Model extends JPanel implements ActionListener {
             pos = pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (pacman_y / BLOCK_SIZE);
             ch = screenData[pos];
 
-            if ((ch & 16) != 0) {
-                screenData[pos] = (short) (ch & 15);
-            }
+            // Remove the following code that handles pellets
+        /*
+        if ((ch & 16) != 0) {
+            screenData[pos] = (short) (ch & 15);
+        }
+        */
 
             if (req_dx != 0 || req_dy != 0) {
                 if (!((req_dx == -1 && req_dy == 0 && (ch & 1) != 0)
@@ -347,6 +389,7 @@ public class Model extends JPanel implements ActionListener {
         pacman_y = pacman_y + PACMAN_SPEED * pacmand_y;
     }
 
+
     private void drawPacman(Graphics2D g2d) {
 
         if (req_dx == -1) {
@@ -361,7 +404,6 @@ public class Model extends JPanel implements ActionListener {
     }
 
     private void drawMaze(Graphics2D g2d) {
-
         short i = 0;
         int x, y;
         int wallThickness = 2;  // Set the desired wall thickness
@@ -391,30 +433,65 @@ public class Model extends JPanel implements ActionListener {
                     g2d.drawLine(x, y + BLOCK_SIZE - 1, x + BLOCK_SIZE - 1, y + BLOCK_SIZE - 1);
                 }
 
-                if ((screenData[i] & 16) != 0) { // Draw pellet
-                    g2d.setColor(new Color(255, 255, 255));
-                    g2d.fillOval(x + 10, y + 10, 6, 6);
-                }
+                // Remove the following code block that draws the pellets
+            /*
+            if ((screenData[i] & 16) != 0) { // Draw pellet
+                g2d.setColor(new Color(255, 255, 255));
+                g2d.fillOval(x + 10, y + 10, 6, 6);
+            }
+            */
 
                 i++;
             }
         }
-
     }
 
 
-    private void initGame() {
 
+    private void initGame() {
         lives = 3;
         level = 0;
         N_GHOSTS = 6;
         currentSpeed = 3;
-        initLevel();
+        inGame = false; // Set inGame to false initially
+
+        // Start the countdown timer when the space key is pressed
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                int key = e.getKeyCode();
+                if (!inGame && key == KeyEvent.VK_SPACE) {
+                    inGame = true;
+                    startCountdownTimer(); // Start the countdown timer when the game starts
+                    startTimer(); // Start the game timer after the countdown
+                }
+            }
+        });
+
+        // Display the "Press Start" message
+        repaint();
     }
+
+
+
 
     private void initLevel() {
         for (int i = 0; i < N_BLOCKS * N_BLOCKS; i++) {
-            screenData[i] = levelData[i];
+            // Remove pellet-related data by clearing the 16 bit
+            screenData[i] = (short)(levelData[i] & 15);
+        }
+
+        // Increment the level variable
+        level++;
+
+        // Adjust the number of ghosts based on the current level
+        N_GHOSTS = level + 10; // You can adjust this formula as needed
+
+        // Initialize ghosts and other game elements
+        for (int i = 0; i < N_GHOSTS; i++) {
+            if (i % 2 == 0) {
+                ghostSpeed[i] *= 2; // Double the speed
+            }
         }
 
         for (int i = 0; i < N_GHOSTS; i++) {
@@ -423,12 +500,11 @@ public class Model extends JPanel implements ActionListener {
 
         continueLevel();
 
-        // Increment the level variable
-        level++;
-
         // Reset and start the timer for the new level
         resetTimer();
     }
+
+
 
 
 
@@ -440,6 +516,13 @@ public class Model extends JPanel implements ActionListener {
         // Calculate the center of the maze
         int centerX = N_BLOCKS / 2 * BLOCK_SIZE;
         int centerY = N_BLOCKS / 2 * BLOCK_SIZE;
+
+        // Generate random respawn coordinates within the maze boundaries
+        int randomX = (int) (Math.random() * (N_BLOCKS - 2) + 1) * BLOCK_SIZE;
+        int randomY = (int) (Math.random() * (N_BLOCKS - 2) + 1) * BLOCK_SIZE;
+
+        pacman_x = randomX;
+        pacman_y = randomY;
 
         for (int i = 0; i < N_GHOSTS; i++) {
             // Start each ghost at the center of the maze
@@ -455,18 +538,21 @@ public class Model extends JPanel implements ActionListener {
                 random = currentSpeed;
             }
 
-            ghostSpeed[i] = validSpeeds[random];
+            ghostSpeed[i] = validSpeeds[random] * 2; // Multiply the speed by 2 for faster movement
         }
 
-        // Reset pacman position and direction
-        pacman_x = 7 * BLOCK_SIZE;
-        pacman_y = 11 * BLOCK_SIZE;
+        // Reset pacman direction
         pacmand_x = 0;
         pacmand_y = 0;
         req_dx = 0;
         req_dy = 0;
         dying = false;
     }
+
+
+
+
+
 
 
     private void drawLevel(Graphics2D g2d) {
@@ -498,7 +584,9 @@ public class Model extends JPanel implements ActionListener {
         drawMaze(g2d);
         drawTimer(g2d);
 
-        if (inGame) {
+        if (gameOver) {
+            showGameOverScreen(g2d);
+        } else if (inGame) {
             playGame(g2d);
         } else {
             showIntroScreen(g2d);
@@ -530,22 +618,24 @@ public class Model extends JPanel implements ActionListener {
         g2d.setColor(Color.RED);
         g2d.drawString(gameOverMsg, x, y);
 
-        // Draw restart button
-        String restartMsg = "Press R to restart";
-        Font smallFont = new Font("Arial", Font.PLAIN, 14);
-        g2d.setFont(smallFont);
+        if (gameOver) {
+            // Draw restart button
+            String restartMsg = "Press R to restart";
+            Font smallFont = new Font("Arial", Font.PLAIN, 14);
+            g2d.setFont(smallFont);
 
-        // Calculate the width and height of the text
-        fm = g2d.getFontMetrics();
-        textWidth = fm.stringWidth(restartMsg);
-        textHeight = fm.getHeight();
+            // Calculate the width and height of the text
+            fm = g2d.getFontMetrics();
+            textWidth = fm.stringWidth(restartMsg);
+            textHeight = fm.getHeight();
 
-        // Set the position for the text
-        x = (SCREEN_SIZE - textWidth) / 2;
-        y += textHeight + 20;
+            // Set the position for the text
+            x = (SCREEN_SIZE - textWidth) / 2;
+            y += textHeight + 20;
 
-        // Draw the restart message
-        g2d.drawString(restartMsg, x, y);
+            // Draw the restart message
+            g2d.drawString(restartMsg, x, y);
+        }
     }
 
     class TAdapter extends KeyAdapter {
@@ -554,10 +644,11 @@ public class Model extends JPanel implements ActionListener {
         public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
 
-            if (!inGame && key == KeyEvent.VK_SPACE) {
+            if (!inGame && key == KeyEvent.VK_SPACE && !gameOver) {
                 inGame = true;
                 initGame();
-                startTimer(); // Start the timer when the game starts
+                startTimer(); // Start the game timer
+                startCountdownTimer(); // Start the countdown when the game starts
             } else if (!timer.isRunning() && key == KeyEvent.VK_ESCAPE) {
                 inGame = false;
                 stopTimer(); // Stop the timer if the game is paused
@@ -580,10 +671,7 @@ public class Model extends JPanel implements ActionListener {
                     inGame = false;
                 }
             } else {
-                if (key == KeyEvent.VK_SPACE) {
-                    inGame = true;
-                    initGame();
-                } else if (key == KeyEvent.VK_R && gameOver) {
+                if (gameOver && key == KeyEvent.VK_R) {
                     gameOver = false; // Reset game over status
                     inGame = true;
                     initGame();
@@ -591,6 +679,7 @@ public class Model extends JPanel implements ActionListener {
                 }
             }
         }
+
     }
 
 

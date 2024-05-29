@@ -16,10 +16,10 @@ public class Read {
             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL);
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
+                String playerName = resultSet.getString("playerName");
                 int score = resultSet.getInt("score");
                 int level = resultSet.getInt("level");
-                leaderboards.add(new Leaderboard(id, name, score,level));
+                leaderboards.add(new Leaderboard(id, playerName, score,level));
             }
         }
         return leaderboards;
