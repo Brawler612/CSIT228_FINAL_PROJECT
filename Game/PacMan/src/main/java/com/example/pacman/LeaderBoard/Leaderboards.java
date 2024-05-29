@@ -31,8 +31,9 @@ public class Leaderboards {
                 Statement stmt = conn.createStatement();
                 String sql = "CREATE TABLE IF NOT EXISTS leaderboard (" +
                         "id INT AUTO_INCREMENT PRIMARY KEY," +
-                        "player_name VARCHAR(255) NOT NULL," +
+                        "playerName VARCHAR(255) NOT NULL," +
                         "score INT NOT NULL," +
+                        "level INT NOT NULL," +
                         "date TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
                         ")";
                 stmt.execute(sql);
