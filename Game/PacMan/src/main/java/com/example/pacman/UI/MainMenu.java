@@ -182,7 +182,10 @@ public class MainMenu extends JFrame {
         scrollPaneUsername.setOpaque(false);
         scrollPaneUsername.getViewport().setOpaque(false);
 
+
         settings2Panel.add(scrollPaneUsername);
+
+
 
         settingstp.setBounds(settingsPanelX, settingsPanelY, settingsPanelWidth, settingsPanelHeight);
         settingstp.add("Accounts",settings2Panel);
@@ -348,6 +351,9 @@ public class MainMenu extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 //settingsPanel.setVisible(!settingsPanel.isVisible());
                 settingstp.setVisible(!settingstp.isVisible());
+                if (settingstp.isVisible()) {
+                    tp.setVisible(false);
+                }
             }
         });
 
@@ -357,6 +363,9 @@ public class MainMenu extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 //settingsPanel.setVisible(!settingsPanel.isVisible());
                 settingstp.setVisible(!settingstp.isVisible());
+                if (settingstp.isVisible()) {
+                    tp.setVisible(false);
+                }
             }
         });
 
@@ -366,6 +375,9 @@ public class MainMenu extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 //leaderboardPanel.setVisible(!leaderboardPanel.isVisible());
                 tp.setVisible(!tp.isVisible());
+                if (tp.isVisible()) {
+                    settingstp.setVisible(false);
+                }
             }
         });
 
@@ -375,6 +387,9 @@ public class MainMenu extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 //leaderboardPanel.setVisible(!leaderboardPanel.isVisible());
                 tp.setVisible(!tp.isVisible());
+                if (tp.isVisible()) {
+                    settingstp.setVisible(false);
+                }
             }
         });
 
