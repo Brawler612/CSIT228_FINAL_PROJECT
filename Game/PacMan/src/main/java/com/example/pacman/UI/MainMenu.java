@@ -108,23 +108,107 @@ public class MainMenu extends JFrame {
         quitImageLabel.setBounds(518, 279, 42, 42); // Position and size of the quit image
         layeredPane.add(quitImageLabel, JLayeredPane.PALETTE_LAYER); // Add quit image to the palette layer
 
+        UIManager.put("TabbedPane.contentOpaque", false);
+        UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0,10,0,10));
+        UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
+
         // Create the settings panel
         int settingsPanelWidth = 330;
         int settingsPanelHeight = 290;
         int settingsPanelX = (600 - settingsPanelWidth) / 2;
         int settingsPanelY = (360 - settingsPanelHeight) / 2;
         JPanel settingsPanel = new JPanel();
+        settingsPanel.setLayout(new GridLayout(4, 4, 10, 10));
         settingsPanel.setBounds(settingsPanelX, settingsPanelY, settingsPanelWidth, settingsPanelHeight);
         settingsPanel.setBackground(new Color(217, 217, 217, 204)); // Background color with opacity
-        settingsPanel.setBorder(new RoundedBorder(16)); // Set rounded border
+        //settingsPanel.setBorder(new RoundedBorder(16)); // Set rounded border
         settingsPanel.setVisible(false); // Initially hidden
-        layeredPane.add(settingsPanel, JLayeredPane.MODAL_LAYER); // Add settings panel to the modal layer
+        //layeredPane.add(settingsPanel, JLayeredPane.MODAL_LAYER); // Add settings panel to the modal layer
+
+        JPanel settings2Panel = new JPanel();
+        settings2Panel.setLayout(new GridLayout(4, 4, 10, 10));
+        //settings2Panel.setBounds(settingsPanelX, settingsPanelY, settingsPanelWidth, settingsPanelHeight);
+        settings2Panel.setBackground(new Color(217, 217, 217, 204)); // Background color with opacity
+        //settings2Panel.setBorder(new RoundedBorder(16)); // Set rounded border
+        settings2Panel.setVisible(true); // Initially hidden
+
+        JLabel accounts = new JLabel("ACCOUNTS", SwingConstants.CENTER);
+        accounts.setPreferredSize(new Dimension(140, 50));
+        accounts.setBackground(new Color(217, 217, 217, 204));
+
+        JLabel audio = new JLabel("AUDIO", SwingConstants.CENTER);
+        audio.setPreferredSize(new Dimension(140, 50));
+        audio.setBackground(new Color(217, 217, 217, 204));
 
         // Create and add the volume control slider to the settings panel
         JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 50); // Default volume at 50%
         volumeSlider.addChangeListener(e -> adjustVolume(volumeSlider.getValue()));
+        volumeSlider.setBackground(new Color(217, 217, 217, 0));
         settingsPanel.add(new JLabel("Volume:"));
         settingsPanel.add(volumeSlider);
+
+        JTabbedPane settingstp=new JTabbedPane();
+        JPanel accountsPanel = new JPanel();
+
+        accountsPanel.setBackground(new Color(217, 217, 217, 204)); // Background color with opacity
+        accountsPanel.setBorder(new RoundedBorder(16)); // Set rounded border
+        //accountsPanel.setBounds(settingsPanelX, settingsPanelY, settingsPanelWidth, settingsPanelHeight);
+
+        List<Leaderboard> topScoreUsernames = leaderboards.getTopScores(20);
+
+        Object[] columnUsernames = {"Username",};
+        Object[][] dataUsername = new Object[20][1];
+
+        int iU=0;
+        for (Leaderboard score : topScoreUsernames) {
+            dataUsername[iU][0] = score.playerName;
+            iU++;
+        }
+
+        UIManager.put("TabbedPane.contentOpaque", false);
+        UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0,10,0,10));
+        UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
+
+        JTable tableUsername = new JTable(dataUsername, columnUsernames);
+        JTableHeader headerUsername = tableUsername.getTableHeader();
+        headerUsername.setDefaultRenderer(new HeaderRenderer());
+        headerUsername.setBackground(new Color(217, 217, 217, 204));
+        tableUsername.setBackground(new Color(217, 217, 217, 204));
+        //tableUsername.setBounds(settingsPanelX, settingsPanelY, settingsPanelWidth-200, settingsPanelHeight);
+        tableUsername.setShowGrid(false);
+
+        JScrollPane scrollPaneUsername = new JScrollPane(tableUsername);
+        //scrollPaneUsername.setBounds(settingsPanelX, settingsPanelY, settingsPanelWidth, settingsPanelHeight);
+        scrollPaneUsername.setOpaque(false);
+        scrollPaneUsername.getViewport().setOpaque(false);
+
+        settings2Panel.add(scrollPaneUsername);
+
+        settingstp.setBounds(settingsPanelX, settingsPanelY, settingsPanelWidth, settingsPanelHeight);
+        settingstp.add("Accounts",settings2Panel);
+        settingstp.add("Audio",settingsPanel);
+        settingstp.setTabComponentAt(0, accounts);
+        settingstp.setTabComponentAt(1, audio);
+        settingstp.setBackground(new Color(217, 217, 217, 204));
+        settingstp.setVisible(false);
+        settingstp.setUI(new BasicTabbedPaneUI() {
+            private final Insets borderInsets = new Insets(0, 0, 0, 0);
+            @Override
+            protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndex) {
+            }
+            @Override
+            protected Insets getContentBorderInsets(int tabPlacement) {
+                return borderInsets;
+            }
+        });
+
+
+
+
+
+        layeredPane.add(settingstp, JLayeredPane.MODAL_LAYER);
+
+
 
         // Create the leaderboard panel
         int leaderboardPanelWidth = 330;
@@ -138,9 +222,7 @@ public class MainMenu extends JFrame {
         leaderboardPanel.setVisible(false); // Initially hidden
         //layeredPane.add(leaderboardPanel, JLayeredPane.MODAL_LAYER); // Add leaderboard panel to the modal layer
 
-        UIManager.put("TabbedPane.contentOpaque", false);
-        UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0,10,0,10));
-        UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
+
 
         JLabel lab = new JLabel("LEADERBOARD", SwingConstants.CENTER);
         lab.setPreferredSize(new Dimension(leaderboardPanelWidth-25, 50));
@@ -152,6 +234,7 @@ public class MainMenu extends JFrame {
         tp.add("Leaderboard",leaderboardPanel);
         tp.setBackground(new Color(217, 217, 217, 204));
         tp.setVisible(false);
+        tp.setEnabledAt(0, false);
         tp.setTabComponentAt(0, lab);
         tp.setUI(new BasicTabbedPaneUI() {
             private final Insets borderInsets = new Insets(0, 0, 0, 0);
@@ -263,7 +346,8 @@ public class MainMenu extends JFrame {
         gearLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                settingsPanel.setVisible(!settingsPanel.isVisible());
+                //settingsPanel.setVisible(!settingsPanel.isVisible());
+                settingstp.setVisible(!settingstp.isVisible());
             }
         });
 
@@ -271,7 +355,8 @@ public class MainMenu extends JFrame {
         settingsLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                settingsPanel.setVisible(!settingsPanel.isVisible());
+                //settingsPanel.setVisible(!settingsPanel.isVisible());
+                settingstp.setVisible(!settingstp.isVisible());
             }
         });
 
