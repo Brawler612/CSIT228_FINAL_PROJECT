@@ -12,10 +12,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.example.pacman.Config;
+import com.example.pacman.LeaderBoard.Create;
 import com.example.pacman.LeaderBoard.Leaderboard;
 import com.example.pacman.LeaderBoard.Leaderboards;
-
-import static com.example.pacman.Leaderboards.*;
 
 public class MainMenu extends JFrame {
     private Connection connection;
@@ -168,7 +168,7 @@ public class MainMenu extends JFrame {
                 try {
                     // Assuming you have a database connection named 'connection'
                     // Establish database connection
-                    connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+                    connection = DriverManager.getConnection(Config.getInstance().DB_URL, Config.getInstance().DB_USER, Config.getInstance().DB_PASSWORD);
                     Create create = new Create();
                     create.insertLeaderboard(connection, username, 0, 0);
                     connection.close(); // Close the connection after use
