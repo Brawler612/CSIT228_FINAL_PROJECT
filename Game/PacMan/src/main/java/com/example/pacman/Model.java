@@ -63,12 +63,10 @@ public class Model extends JPanel implements ActionListener {
     private Timer timer;
 
     public Model() {
-
         loadImages();
         initVariables();
         addKeyListener(new TAdapter());
         setFocusable(true);
-        initGame();
         gameTimer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -78,14 +76,17 @@ public class Model extends JPanel implements ActionListener {
                 }
             }
         });
+        initGame();
     }
+
+
     private void endGame() {
         inGame = false;
         // Implement any other actions to end the game
     }
 
     private void startTimer() {
-        remainingTimeInSeconds = 30; // Reset timer
+        resetTimer(); // Reset and start the timer
         gameTimer.start();
     }
 
@@ -169,6 +170,13 @@ public class Model extends JPanel implements ActionListener {
         g2d.setColor(Color.YELLOW);
         g2d.drawString(start, x, y);
     }
+
+    private void resetTimer() {
+        remainingTimeInSeconds = 30; // Reset timer to 30 seconds
+        gameTimer.restart(); // Restart the timer
+    }
+
+
 
 
 
@@ -412,7 +420,12 @@ public class Model extends JPanel implements ActionListener {
 
         // Increment the level variable
         level++;
+
+        // Reset and start the timer for the new level
+        resetTimer();
     }
+
+
 
 
     private void continueLevel() {
@@ -495,14 +508,13 @@ public class Model extends JPanel implements ActionListener {
 
         @Override
         public void keyPressed(KeyEvent e) {
-
             int key = e.getKeyCode();
 
             if (!inGame && key == KeyEvent.VK_SPACE) {
                 inGame = true;
                 initGame();
                 startTimer(); // Start the timer when the game starts
-            } else if (!timer.isRunning() && key == KeyEvent.VK_ESCAPE) {
+            } else if (inGame && key == KeyEvent.VK_ESCAPE) {
                 inGame = false;
                 stopTimer(); // Stop the timer if the game is paused
             }
@@ -530,8 +542,9 @@ public class Model extends JPanel implements ActionListener {
                 }
             }
         }
-
     }
+
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
