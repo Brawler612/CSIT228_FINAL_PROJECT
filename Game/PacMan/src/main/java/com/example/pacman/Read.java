@@ -18,7 +18,8 @@ public class Read {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
                 int score = resultSet.getInt("score");
-                leaderboards.add(new Leaderboard(id, name, score));
+                int level = resultSet.getInt("level");
+                leaderboards.add(new Leaderboard(id, name, score,level));
             }
         }
         return leaderboards;

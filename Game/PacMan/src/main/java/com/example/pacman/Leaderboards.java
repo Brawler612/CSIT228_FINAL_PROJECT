@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Leaderboards {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/oopdatabase";
+    public static final String DB_URL = "jdbc:mysql://localhost:3306/oopdatabase";
     public static final String USERNAME = "root";
     public static final String PASSWORD ="";
 
