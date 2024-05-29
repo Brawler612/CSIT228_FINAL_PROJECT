@@ -393,9 +393,10 @@ public class Model extends JPanel implements ActionListener {
     private void initGame() {
 
         lives = 3;
-        initLevel();
+        level = 0;
         N_GHOSTS = 6;
         currentSpeed = 3;
+        initLevel();
     }
 
     private void initLevel() {
