@@ -132,6 +132,44 @@ public class MainMenu extends JFrame {
             leaderboardPanel.add(scoreLabel);
         }
 
+        // Create the container for username input
+        JPanel usernameContainer = new JPanel();
+        JLabel usernameLabel = new JLabel("Enter username:");
+        JTextField usernameField = new JTextField(15);
+        JButton okButton = new JButton("OK");
+        JButton cancelButton = new JButton("Cancel");
+
+        // Add components to the username container
+        usernameContainer.add(usernameLabel);
+        usernameContainer.add(usernameField);
+        usernameContainer.add(okButton);
+        usernameContainer.add(cancelButton);
+
+        // Set up action listeners for buttons
+        okButton.addActionListener(e -> {
+            String username = usernameField.getText();
+            if (!username.isEmpty()) {
+                // Do something with the username
+                System.out.println("Username: " + username);
+                // For now, let's just hide the username container
+                usernameContainer.setVisible(false);
+            }
+        });
+
+        cancelButton.addActionListener(e -> {
+            // Clear the username field and hide the container
+            usernameField.setText("");
+            usernameContainer.setVisible(false);
+        });
+
+        // Set the position of the username container
+        int usernameContainerX = (600 - 200) / 2; // Center horizontally
+        int usernameContainerY = 280; // Below the leaderboard panel
+        usernameContainer.setBounds(usernameContainerX, usernameContainerY, 200, 80);
+
+        // Add the username container to the layered pane
+        layeredPane.add(usernameContainer, JLayeredPane.MODAL_LAYER);
+
         // Add mouse listener to gear icon to show/hide settings panel
         gearLabel.addMouseListener(new MouseAdapter() {
             @Override

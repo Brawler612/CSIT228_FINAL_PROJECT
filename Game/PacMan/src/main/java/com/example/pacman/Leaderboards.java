@@ -8,8 +8,8 @@ import java.util.List;
 
 public class Leaderboards {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/oopdatabase";
-    private static final String DB_USER = "your_username";
-    private static final String DB_PASSWORD = "your_password";
+    public static final String USERNAME = "root";
+    public static final String PASSWORD ="";
 
     public Leaderboards() {
         try {
@@ -19,17 +19,17 @@ public class Leaderboards {
         }
     }
 
-    public void create(String name, int score) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+    public void create(String name, int score, int rank) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD)) {
             Create create = new Create();
-            create.insertLeaderboard(connection, name, score);
+            create.insertLeaderboard(connection, name, score, rank);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public List<Leaderboard> getTopScores(int limit) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD)) {
             Read read = new Read();
             return read.getTopLeaderboards(connection);
         } catch (SQLException e) {
@@ -39,7 +39,7 @@ public class Leaderboards {
     }
 
     public void update(int id, String newName, int newScore) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD)) {
             Update update = new Update();
             update.updateLeaderboard(connection, id, newName, newScore);
         } catch (SQLException e) {
@@ -48,7 +48,7 @@ public class Leaderboards {
     }
 
     public void delete(int id) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD)) {
             Delete delete = new Delete();
             delete.deleteLeaderboard(connection, id);
         } catch (SQLException e) {
