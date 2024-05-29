@@ -1,4 +1,6 @@
-package com.example.pacman;
+package com.example.pacman.LeaderBoard;
+
+import com.example.pacman.Config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,8 +10,8 @@ import java.util.List;
 
 public class Leaderboards {
     private static String DB_URL;
-    public static String USERNAME = "root";
-    public static String PASSWORD ="";
+    public static String USERNAME;
+    public static String PASSWORD;
 
     public Leaderboards() {
         try {

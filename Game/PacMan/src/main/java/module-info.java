@@ -8,4 +8,10 @@ module com.example.pacman {
 
     opens com.example.pacman to javafx.fxml;
     exports com.example.pacman;
+    exports com.example.pacman.LeaderBoard;
+    opens com.example.pacman.LeaderBoard to javafx.fxml;
+    exports com.example.pacman.Account;
+    opens com.example.pacman.Account to javafx.fxml;
+    exports com.example.pacman.UI;
+    opens com.example.pacman.UI to javafx.fxml;
 }

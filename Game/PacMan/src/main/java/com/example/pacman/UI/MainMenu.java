@@ -1,4 +1,4 @@
-package com.example.pacman;
+package com.example.pacman.UI;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
@@ -13,7 +13,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
-import com.example.pacman.RoundedBorder;
+
+import com.example.pacman.LeaderBoard.Leaderboard;
+import com.example.pacman.LeaderBoard.Leaderboards;
 
 import static com.example.pacman.Leaderboards.*;
 

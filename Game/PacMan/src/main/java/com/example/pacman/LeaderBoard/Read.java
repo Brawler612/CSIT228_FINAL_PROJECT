@@ -1,4 +1,4 @@
-package com.example.pacman;
+package com.example.pacman.LeaderBoard;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

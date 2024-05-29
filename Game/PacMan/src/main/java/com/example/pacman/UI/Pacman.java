@@ -1,4 +1,4 @@
-package com.example.pacman;
+package com.example.pacman.UI;
 
 import javax.swing.JFrame;
 
