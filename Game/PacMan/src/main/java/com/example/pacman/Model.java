@@ -81,6 +81,18 @@ public class Model extends JPanel implements ActionListener {
         });
         initGame();
     }
+    public int getCountdown() {
+        return countdown;
+    }
+    public void decrementCountdown() {
+        countdown--;
+    }
+
+    public void startCountdownTimer() {
+        countdown = 3; // Reset the countdown
+        CountdownTimer countdownTimer = new CountdownTimer(this);
+        countdownTimer.start();
+    }
 
 
     private void endGame() {
@@ -91,7 +103,7 @@ public class Model extends JPanel implements ActionListener {
     }
 
 
-    private void startTimer() {
+    void startTimer() {
         resetTimer(); // Reset and start the timer
         gameTimer.start();
     }
@@ -202,32 +214,6 @@ public class Model extends JPanel implements ActionListener {
             }
         }
     }
-
-
-
-
-
-
-
-    private void startCountdownTimer() {
-        countdown = 3; // Reset the countdown
-        Timer countdownTimer = new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                countdown--;
-                if (countdown == 0) {
-                    ((Timer) e.getSource()).stop(); // Stop the countdown timer
-                    startTimer(); // Start the game timer
-                }
-                repaint(); // Repaint to update the countdown message
-            }
-        });
-        countdownTimer.start();
-    }
-
-
-
-
 
     private void resetTimer() {
         remainingTimeInSeconds = 30; // Reset timer to 30 seconds
@@ -366,7 +352,6 @@ public class Model extends JPanel implements ActionListener {
 
 
     private void movePacman() {
-
         int pos;
         short ch;
 
@@ -374,9 +359,12 @@ public class Model extends JPanel implements ActionListener {
             pos = pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (pacman_y / BLOCK_SIZE);
             ch = screenData[pos];
 
-            if ((ch & 16) != 0) {
-                screenData[pos] = (short) (ch & 15);
-            }
+            // Remove the following code that handles pellets
+        /*
+        if ((ch & 16) != 0) {
+            screenData[pos] = (short) (ch & 15);
+        }
+        */
 
             if (req_dx != 0 || req_dy != 0) {
                 if (!((req_dx == -1 && req_dy == 0 && (ch & 1) != 0)
@@ -400,6 +388,7 @@ public class Model extends JPanel implements ActionListener {
         pacman_y = pacman_y + PACMAN_SPEED * pacmand_y;
     }
 
+
     private void drawPacman(Graphics2D g2d) {
 
         if (req_dx == -1) {
@@ -414,7 +403,6 @@ public class Model extends JPanel implements ActionListener {
     }
 
     private void drawMaze(Graphics2D g2d) {
-
         short i = 0;
         int x, y;
         int wallThickness = 2;  // Set the desired wall thickness
@@ -444,16 +432,19 @@ public class Model extends JPanel implements ActionListener {
                     g2d.drawLine(x, y + BLOCK_SIZE - 1, x + BLOCK_SIZE - 1, y + BLOCK_SIZE - 1);
                 }
 
-                if ((screenData[i] & 16) != 0) { // Draw pellet
-                    g2d.setColor(new Color(255, 255, 255));
-                    g2d.fillOval(x + 10, y + 10, 6, 6);
-                }
+                // Remove the following code block that draws the pellets
+            /*
+            if ((screenData[i] & 16) != 0) { // Draw pellet
+                g2d.setColor(new Color(255, 255, 255));
+                g2d.fillOval(x + 10, y + 10, 6, 6);
+            }
+            */
 
                 i++;
             }
         }
-
     }
+
 
 
     private void initGame() {
@@ -485,7 +476,8 @@ public class Model extends JPanel implements ActionListener {
 
     private void initLevel() {
         for (int i = 0; i < N_BLOCKS * N_BLOCKS; i++) {
-            screenData[i] = levelData[i];
+            // Remove pellet-related data by clearing the 16 bit
+            screenData[i] = (short)(levelData[i] & 15);
         }
 
         // Increment the level variable
@@ -510,6 +502,7 @@ public class Model extends JPanel implements ActionListener {
         // Reset and start the timer for the new level
         resetTimer();
     }
+
 
 
 
