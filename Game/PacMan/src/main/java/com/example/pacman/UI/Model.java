@@ -555,10 +555,7 @@ public class Model extends JPanel implements ActionListener {
             connection = DriverManager.getConnection(Config.getInstance().DB_URL, Config.getInstance().DB_USER, Config.getInstance().DB_PASSWORD);
             Update update = new Update();
             update.updateLeaderboard(connection, Integer.parseInt(getUserId()), getUsername(), level);
-            //int userId = create.insertLeaderboard(connection, username, 0, 0);
-            //this.userId = userId;
-            //this.username = username;
-            //System.out.println("userId " + userId);
+
             connection.close(); // Close the connection after use
         } catch (SQLException ex) {
             ex.printStackTrace();

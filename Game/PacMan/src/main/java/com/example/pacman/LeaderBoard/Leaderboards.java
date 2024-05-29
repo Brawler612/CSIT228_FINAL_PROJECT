@@ -34,7 +34,6 @@ public class Leaderboards {
                         "playerName VARCHAR(255) NOT NULL," +
                         "score INT NOT NULL," +
                         "level INT NOT NULL," +
-                        "isActive TINYINT(1) NOT NULL DEFAULT 0," +
                         "date TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
                         ")";
                 stmt.execute(sql);
