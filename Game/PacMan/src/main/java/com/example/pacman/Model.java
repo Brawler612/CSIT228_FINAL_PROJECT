@@ -29,6 +29,8 @@ public class Model extends JPanel implements ActionListener {
     private int[] dx, dy;
     private int[] ghost_x, ghost_y, ghost_dx, ghost_dy, ghostSpeed;
     private int level = 1;
+    private boolean gameOver = false;
+
 
     private Image heart, ghost;
     private Image up, down, left, right;
@@ -82,8 +84,11 @@ public class Model extends JPanel implements ActionListener {
 
     private void endGame() {
         inGame = false;
+        gameOver = true;
+        stopTimer(); // Stop the timer when the game ends
         // Implement any other actions to end the game
     }
+
 
     private void startTimer() {
         resetTimer(); // Reset and start the timer
@@ -503,6 +508,45 @@ public class Model extends JPanel implements ActionListener {
         Toolkit.getDefaultToolkit().sync();
         g2d.dispose();
     }
+    private void showGameOverScreen(Graphics2D g2d) {
+        String gameOverMsg = "Game Over";
+        Font largeFont = new Font("Helvetica", Font.BOLD, 24);
+        g2d.setFont(largeFont);
+
+        // Calculate the width and height of the text
+        FontMetrics fm = g2d.getFontMetrics();
+        int textWidth = fm.stringWidth(gameOverMsg);
+        int textHeight = fm.getHeight();
+
+        // Set the position for the text
+        int x = (SCREEN_SIZE - textWidth) / 2;
+        int y = SCREEN_SIZE / 2;
+
+        // Set the background color and draw the rectangle
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(x - 10, y - textHeight + fm.getDescent() - 10, textWidth + 20, textHeight + 20);
+
+        // Set the text color and draw the string
+        g2d.setColor(Color.RED);
+        g2d.drawString(gameOverMsg, x, y);
+
+        // Draw restart button
+        String restartMsg = "Press R to restart";
+        Font smallFont = new Font("Arial", Font.PLAIN, 14);
+        g2d.setFont(smallFont);
+
+        // Calculate the width and height of the text
+        fm = g2d.getFontMetrics();
+        textWidth = fm.stringWidth(restartMsg);
+        textHeight = fm.getHeight();
+
+        // Set the position for the text
+        x = (SCREEN_SIZE - textWidth) / 2;
+        y += textHeight + 20;
+
+        // Draw the restart message
+        g2d.drawString(restartMsg, x, y);
+    }
 
     class TAdapter extends KeyAdapter {
 
@@ -514,7 +558,7 @@ public class Model extends JPanel implements ActionListener {
                 inGame = true;
                 initGame();
                 startTimer(); // Start the timer when the game starts
-            } else if (inGame && key == KeyEvent.VK_ESCAPE) {
+            } else if (!timer.isRunning() && key == KeyEvent.VK_ESCAPE) {
                 inGame = false;
                 stopTimer(); // Stop the timer if the game is paused
             }
@@ -539,6 +583,11 @@ public class Model extends JPanel implements ActionListener {
                 if (key == KeyEvent.VK_SPACE) {
                     inGame = true;
                     initGame();
+                } else if (key == KeyEvent.VK_R && gameOver) {
+                    gameOver = false; // Reset game over status
+                    inGame = true;
+                    initGame();
+                    startTimer(); // Start the timer when the game starts
                 }
             }
         }
