@@ -8,12 +8,18 @@ import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 public class Model extends JPanel implements ActionListener {
 
     private Dimension d;
     private final Font smallFont = new Font("Arial", Font.BOLD, 14);
     private boolean inGame = false;
+    private Clip collisionSound;
     private boolean dying = false;
 
     private final int BLOCK_SIZE = 48;
@@ -23,8 +29,10 @@ public class Model extends JPanel implements ActionListener {
     private final int SCREEN_SIZE = N_BLOCKS * BLOCK_SIZE;
     private final int MAX_GHOSTS = 17;
     private final int PACMAN_SPEED = 6;
+    private final int INITIAL_GHOST_SPEED = 1; // Initial ghost speed for level 1
+    private final int INITIAL_GHOST_COUNT = 3; // Initial number of ghosts for level 1
 
-    private int N_GHOSTS = 11;
+    private int N_GHOSTS = INITIAL_GHOST_COUNT;
     private int countdown = 3;
     private int lives;
     private int[] dx, dy;
@@ -68,6 +76,7 @@ public class Model extends JPanel implements ActionListener {
     public Model() {
         loadImages();
         initVariables();
+        initCollisionSound();
         addKeyListener(new TAdapter());
         setFocusable(true);
         gameTimer = new Timer(1000, new ActionListener() {
@@ -80,6 +89,34 @@ public class Model extends JPanel implements ActionListener {
             }
         });
         initGame();
+    }
+    private void initCollisionSound() {
+        try {
+            // Specify the absolute path to the sound file
+            String filePath = "C:\\Users\\Matt\\IdeaProjects\\CSIT228_FINAL_PROJECT\\Game\\PacMan\\src\\sounds\\slash.wav"; // Replace this with the actual absolute path
+
+            // Create a File object with the absolute path
+            File soundFile = new File(filePath);
+
+            // Check if the file exists
+            if (!soundFile.exists()) {
+                throw new FileNotFoundException("Sound file not found: " + filePath);
+            }
+
+            // Continue loading the sound file
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
+            collisionSound = AudioSystem.getClip();
+            collisionSound.open(audioInputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void playCollisionSound() {
+        if (collisionSound != null && !collisionSound.isRunning()) {
+            collisionSound.setFramePosition(0);
+            collisionSound.start();
+        }
     }
     public int getCountdown() {
         return countdown;
@@ -340,6 +377,14 @@ public class Model extends JPanel implements ActionListener {
                     && inGame) {
                 // Pacman eats the ghost
                 ghostsAlive[i] = false; // Mark the ghost as not alive
+
+            }
+            if (pacman_x > (ghost_x[i] - 12) && pacman_x < (ghost_x[i] + 12)
+                    && pacman_y > (ghost_y[i] - 12) && pacman_y < (ghost_y[i] + 12)
+                    && inGame) {
+                // Pacman eats the ghost
+                ghostsAlive[i] = false; // Mark the ghost as not alive
+                playCollisionSound(); // Play the collision sound effect
             }
         }
     }
@@ -352,6 +397,7 @@ public class Model extends JPanel implements ActionListener {
 
 
     private void movePacman() {
+
         int pos;
         short ch;
 
@@ -359,12 +405,9 @@ public class Model extends JPanel implements ActionListener {
             pos = pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (pacman_y / BLOCK_SIZE);
             ch = screenData[pos];
 
-            // Remove the following code that handles pellets
-        /*
-        if ((ch & 16) != 0) {
-            screenData[pos] = (short) (ch & 15);
-        }
-        */
+            if ((ch & 16) != 0) {
+                screenData[pos] = (short) (ch & 15);
+            }
 
             if (req_dx != 0 || req_dy != 0) {
                 if (!((req_dx == -1 && req_dy == 0 && (ch & 1) != 0)
@@ -387,7 +430,6 @@ public class Model extends JPanel implements ActionListener {
         pacman_x = pacman_x + PACMAN_SPEED * pacmand_x;
         pacman_y = pacman_y + PACMAN_SPEED * pacmand_y;
     }
-
 
     private void drawPacman(Graphics2D g2d) {
 
@@ -476,20 +518,19 @@ public class Model extends JPanel implements ActionListener {
 
     private void initLevel() {
         for (int i = 0; i < N_BLOCKS * N_BLOCKS; i++) {
-            // Remove pellet-related data by clearing the 16 bit
-            screenData[i] = (short)(levelData[i] & 15);
+            screenData[i] = levelData[i];
         }
 
         // Increment the level variable
         level++;
 
         // Adjust the number of ghosts based on the current level
-        N_GHOSTS = level + 10; // You can adjust this formula as needed
+        N_GHOSTS = INITIAL_GHOST_COUNT + (level - 1) + 2; // You can adjust this formula as needed
 
         // Initialize ghosts and other game elements
         for (int i = 0; i < N_GHOSTS; i++) {
             if (i % 2 == 0) {
-                ghostSpeed[i] *= 2; // Double the speed
+                ghostSpeed[i] = INITIAL_GHOST_SPEED + level - 1; // Double the speed
             }
         }
 
@@ -502,7 +543,6 @@ public class Model extends JPanel implements ActionListener {
         // Reset and start the timer for the new level
         resetTimer();
     }
-
 
 
 
