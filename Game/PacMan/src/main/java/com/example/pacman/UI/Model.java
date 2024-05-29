@@ -94,15 +94,12 @@ public class Model extends JPanel implements ActionListener {
     }
     private void initCollisionSound() {
         try {
-            // Specify the absolute path to the sound file
-            String filePath = "C:\\Users\\Matt\\IdeaProjects\\CSIT228_FINAL_PROJECT\\Game\\PacMan\\src\\sounds\\slash.wav"; // Replace this with the actual absolute path
-
             // Create a File object with the absolute path
-            File soundFile = new File(filePath);
+            File soundFile = new File("Game/PacMan/src/sounds/slash.wav");
 
             // Check if the file exists
             if (!soundFile.exists()) {
-                throw new FileNotFoundException("Sound file not found: " + filePath);
+                throw new FileNotFoundException("Sound file not found: " + soundFile);
             }
 
             // Continue loading the sound file
