@@ -1,7 +1,5 @@
 package com.example.pacman.UI;
 
-import io.github.cdimascio.dotenv.Dotenv;
-
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
@@ -27,10 +25,6 @@ public class MainMenu extends JFrame {
 
     public MainMenu() {
         // Initialize the leaderboards
-        Dotenv dotenv = Dotenv.load();
-        String s = dotenv.get("sample");
-
-        System.out.println("s " + s);
         leaderboards = new Leaderboards();
 
         // Set up the frame
