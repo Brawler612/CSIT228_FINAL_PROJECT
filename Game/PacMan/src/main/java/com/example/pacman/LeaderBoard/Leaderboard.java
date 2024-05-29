@@ -2,9 +2,9 @@ package com.example.pacman.LeaderBoard;
 
 public class Leaderboard {
     private int id;
-    private String playerName;
-    private int score;
-    private int level;
+    public String playerName;
+    public int score;
+    public int level;
 
     public Leaderboard(int id, String playerName, int score, int level) {
         this.id = id;

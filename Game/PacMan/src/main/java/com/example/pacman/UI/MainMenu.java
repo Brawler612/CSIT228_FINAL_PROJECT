@@ -2,6 +2,8 @@ package com.example.pacman.UI;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -132,17 +134,75 @@ public class MainMenu extends JFrame {
         JPanel leaderboardPanel = new JPanel();
         leaderboardPanel.setBounds(leaderboardPanelX, leaderboardPanelY, leaderboardPanelWidth, leaderboardPanelHeight);
         leaderboardPanel.setBackground(new Color(217, 217, 217, 204)); // Background color with opacity
-        leaderboardPanel.setBorder(new RoundedBorder(16)); // Set rounded border
+        //leaderboardPanel.setBorder(new RoundedBorder(16)); // Set rounded border
         leaderboardPanel.setVisible(false); // Initially hidden
-        layeredPane.add(leaderboardPanel, JLayeredPane.MODAL_LAYER); // Add leaderboard panel to the modal layer
+        //layeredPane.add(leaderboardPanel, JLayeredPane.MODAL_LAYER); // Add leaderboard panel to the modal layer
+
+        UIManager.put("TabbedPane.contentOpaque", false);
+        UIManager.getDefaults().put("TabbedPane.contentBorderInsets", new Insets(0,10,0,10));
+        UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
+
+        JLabel lab = new JLabel("LEADERBOARD", SwingConstants.CENTER);
+        lab.setPreferredSize(new Dimension(leaderboardPanelWidth-25, 50));
+        lab.setBackground(new Color(217, 217, 217, 204));
+
+
+        JTabbedPane tp=new JTabbedPane();
+        tp.setBounds(leaderboardPanelX, leaderboardPanelY, leaderboardPanelWidth, leaderboardPanelHeight);
+        tp.add("Leaderboard",leaderboardPanel);
+        tp.setBackground(new Color(217, 217, 217, 204));
+        tp.setVisible(false);
+        tp.setTabComponentAt(0, lab);
+        tp.setUI(new BasicTabbedPaneUI() {
+            private final Insets borderInsets = new Insets(0, 0, 0, 0);
+            @Override
+            protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndex) {
+            }
+            @Override
+            protected Insets getContentBorderInsets(int tabPlacement) {
+                return borderInsets;
+            }
+        });
+
+        layeredPane.add(tp, JLayeredPane.MODAL_LAYER);
+
 
         // Add leaderboard data to the panel
         leaderboardPanel.setLayout(new BoxLayout(leaderboardPanel, BoxLayout.Y_AXIS));
         List<Leaderboard> topScores = leaderboards.getTopScores(10);
+//        for (Leaderboard score : topScores) {
+//            JLabel scoreLabel = new JLabel(String.valueOf(score));
+//            leaderboardPanel.add(scoreLabel);
+//        }
+
+        //DefaultListModel<Leaderboard> listModel = new DefaultListModel<Leaderboard>();
+        Object[] column = {"Username", "Scores", "Level"};
+        Object[][] data = new Object[10][4];
+        int i=0;
         for (Leaderboard score : topScores) {
-            JLabel scoreLabel = new JLabel(String.valueOf(score));
-            leaderboardPanel.add(scoreLabel);
+            int ii=0;
+            //listModel.addElement(score);
+            data[i][ii++] = score.playerName;
+            data[i][ii++] = score.score;
+            data[i][ii++] = score.level;
+            i++;
         }
+
+        //JList<Leaderboard> jList = new JList<>(listModel);
+
+        //Object[][] data = {{1, 2, 3}, {3, 4, 5}, {5, 6, 7}};
+
+        JTable table = new JTable(data, column);
+        JTableHeader header = table.getTableHeader();
+        header.setDefaultRenderer(new HeaderRenderer());
+        header.setBackground(new Color(217, 217, 217, 204));
+        table.setBackground(new Color(217, 217, 217, 204));
+        table.setShowGrid(false);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        leaderboardPanel.add(scrollPane);
 
         // Create the container for username input
         JPanel usernameContainer = new JPanel();
@@ -219,7 +279,8 @@ public class MainMenu extends JFrame {
         trophyLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                leaderboardPanel.setVisible(!leaderboardPanel.isVisible());
+                //leaderboardPanel.setVisible(!leaderboardPanel.isVisible());
+                tp.setVisible(!tp.isVisible());
             }
         });
 
@@ -227,7 +288,8 @@ public class MainMenu extends JFrame {
         leaderboardLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                leaderboardPanel.setVisible(!leaderboardPanel.isVisible());
+                //leaderboardPanel.setVisible(!leaderboardPanel.isVisible());
+                tp.setVisible(!tp.isVisible());
             }
         });
 
