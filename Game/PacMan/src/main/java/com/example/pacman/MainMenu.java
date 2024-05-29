@@ -1,17 +1,25 @@
 package com.example.pacman;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class MainMenu extends JFrame {
+    private Leaderboards leaderboards;
+    private Clip backgroundMusicClip;
+    private FloatControl volumeControl;
+
     public MainMenu() {
         // Initialize the leaderboards
+        leaderboards = new Leaderboards();
 
         // Set up the frame
-        setTitle("Main Menu");
+        setTitle("Attack on PacMan");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(614, 397); // Updated screen size to 600x360
         setLocationRelativeTo(null); // Center the frame on the screen
@@ -22,7 +30,7 @@ public class MainMenu extends JFrame {
         layeredPane.setPreferredSize(new Dimension(600, 360));
 
         // Add the GIF as the background
-        JLabel background = new JLabel(new ImageIcon("Game/PacMan/src/images/main_menu/backgroundPic.gif")); // Change the path to your GIF file
+        JLabel background = new JLabel(new ImageIcon("Game/PacMan/src/images/main_menu/main_menu_background.gif")); // Change the path to your GIF file
         background.setBounds(0, 0, 600, 360); // Set bounds for the background label
         layeredPane.add(background, JLayeredPane.DEFAULT_LAYER); // Add background to the default layer
 
@@ -98,6 +106,12 @@ public class MainMenu extends JFrame {
         settingsPanel.setVisible(false); // Initially hidden
         layeredPane.add(settingsPanel, JLayeredPane.MODAL_LAYER); // Add settings panel to the modal layer
 
+        // Create and add the volume control slider to the settings panel
+        JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 50); // Default volume at 50%
+        volumeSlider.addChangeListener(e -> adjustVolume(volumeSlider.getValue()));
+        settingsPanel.add(new JLabel("Volume:"));
+        settingsPanel.add(volumeSlider);
+
         // Create the leaderboard panel
         int leaderboardPanelWidth = 330;
         int leaderboardPanelHeight = 290;
@@ -109,6 +123,14 @@ public class MainMenu extends JFrame {
         leaderboardPanel.setBorder(new RoundedBorder(16)); // Set rounded border
         leaderboardPanel.setVisible(false); // Initially hidden
         layeredPane.add(leaderboardPanel, JLayeredPane.MODAL_LAYER); // Add leaderboard panel to the modal layer
+
+        // Add leaderboard data to the panel
+        leaderboardPanel.setLayout(new BoxLayout(leaderboardPanel, BoxLayout.Y_AXIS));
+        List<Leaderboard> topScores = leaderboards.getTopScores(10);
+        for (Leaderboard score : topScores) {
+            JLabel scoreLabel = new JLabel(String.valueOf(score));
+            leaderboardPanel.add(scoreLabel);
+        }
 
         // Add mouse listener to gear icon to show/hide settings panel
         gearLabel.addMouseListener(new MouseAdapter() {
@@ -175,7 +197,38 @@ public class MainMenu extends JFrame {
         });
 
         add(layeredPane, BorderLayout.CENTER); // Add layeredPane to the frame
+
+        // Load and play background music
+        playBackgroundMusic("Game/PacMan/src/sounds/background_music.wav");
+
         setVisible(true); // Make the frame visible
+    }
+
+    private void playBackgroundMusic(String filePath) {
+        try {
+            File musicPath = new File(filePath);
+            if (musicPath.exists()) {
+                AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
+                backgroundMusicClip = AudioSystem.getClip();
+                backgroundMusicClip.open(audioInput);
+                volumeControl = (FloatControl) backgroundMusicClip.getControl(FloatControl.Type.MASTER_GAIN);
+                backgroundMusicClip.loop(Clip.LOOP_CONTINUOUSLY); // Loop the music
+                backgroundMusicClip.start();
+            } else {
+                System.out.println("Can't find file: " + filePath);
+            }
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void adjustVolume(int volume) {
+        if (volumeControl != null) {
+            float min = volumeControl.getMinimum();
+            float max = volumeControl.getMaximum();
+            float newVolume = min + (volume / 100.0f) * (max - min);
+            volumeControl.setValue(newVolume);
+        }
     }
 
     public static void main(String[] args) {
