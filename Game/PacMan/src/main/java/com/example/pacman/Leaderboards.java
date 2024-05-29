@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Leaderboards {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/oopdatabase";
+    public static final String DB_URL = "jdbc:mysql://localhost:3306/oopdatabase";
     public static final String USERNAME = "root";
     public static final String PASSWORD ="";
 
@@ -19,10 +19,10 @@ public class Leaderboards {
         }
     }
 
-    public void create(String name, int score, int rank) {
+    public void create(String playerName, int score, int rank) {
         try (Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD)) {
             Create create = new Create();
-            create.insertLeaderboard(connection, name, score, rank);
+            create.insertLeaderboard(connection, playerName, score, rank);
         } catch (SQLException e) {
             e.printStackTrace();
         }

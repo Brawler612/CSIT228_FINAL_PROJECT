@@ -273,6 +273,7 @@ public class Model extends JPanel implements ActionListener {
     }
 
 
+
     private void checkMaze() {
 
         int i = 0;

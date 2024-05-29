@@ -2,19 +2,21 @@ package com.example.pacman;
 
 public class Leaderboard {
     private int id;
-    private String name;
+    private String playerName;
     private int score;
+    private int level;
 
-    public Leaderboard(int id, String name, int score) {
+    public Leaderboard(int id, String playerName, int score, int level) {
         this.id = id;
-        this.name = name;
+        this.playerName = playerName;
         this.score = score;
+        this.level = level;
     }
 
     // Getters and setters
 
     @Override
     public String toString() {
-        return String.format("%d. %s - %d", id, name, score);
+        return String.format("%d. %s - %d - %d", id, playerName, score,level);
     }
 }
