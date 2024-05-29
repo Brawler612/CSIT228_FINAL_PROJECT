@@ -1,13 +1,18 @@
 package com.example.pacman;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class MainMenu extends JFrame {
     private Leaderboards leaderboards;
+    private Clip backgroundMusicClip;
+    private FloatControl volumeControl;
 
     public MainMenu() {
         // Initialize the leaderboards
@@ -101,6 +106,12 @@ public class MainMenu extends JFrame {
         settingsPanel.setVisible(false); // Initially hidden
         layeredPane.add(settingsPanel, JLayeredPane.MODAL_LAYER); // Add settings panel to the modal layer
 
+        // Create and add the volume control slider to the settings panel
+        JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 50); // Default volume at 50%
+        volumeSlider.addChangeListener(e -> adjustVolume(volumeSlider.getValue()));
+        settingsPanel.add(new JLabel("Volume:"));
+        settingsPanel.add(volumeSlider);
+
         // Create the leaderboard panel
         int leaderboardPanelWidth = 330;
         int leaderboardPanelHeight = 290;
@@ -186,7 +197,38 @@ public class MainMenu extends JFrame {
         });
 
         add(layeredPane, BorderLayout.CENTER); // Add layeredPane to the frame
+
+        // Load and play background music
+        playBackgroundMusic("Game/PacMan/src/sounds/background_music.wav");
+
         setVisible(true); // Make the frame visible
+    }
+
+    private void playBackgroundMusic(String filePath) {
+        try {
+            File musicPath = new File(filePath);
+            if (musicPath.exists()) {
+                AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
+                backgroundMusicClip = AudioSystem.getClip();
+                backgroundMusicClip.open(audioInput);
+                volumeControl = (FloatControl) backgroundMusicClip.getControl(FloatControl.Type.MASTER_GAIN);
+                backgroundMusicClip.loop(Clip.LOOP_CONTINUOUSLY); // Loop the music
+                backgroundMusicClip.start();
+            } else {
+                System.out.println("Can't find file: " + filePath);
+            }
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void adjustVolume(int volume) {
+        if (volumeControl != null) {
+            float min = volumeControl.getMinimum();
+            float max = volumeControl.getMaximum();
+            float newVolume = min + (volume / 100.0f) * (max - min);
+            volumeControl.setValue(newVolume);
+        }
     }
 
     public static void main(String[] args) {
