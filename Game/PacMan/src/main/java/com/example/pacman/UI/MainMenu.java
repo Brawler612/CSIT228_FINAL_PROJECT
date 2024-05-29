@@ -144,7 +144,7 @@ public class MainMenu extends JFrame {
         JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 50); // Default volume at 50%
         volumeSlider.addChangeListener(e -> adjustVolume(volumeSlider.getValue()));
         volumeSlider.setBackground(new Color(217, 217, 217, 0));
-        settingsPanel.add(new JLabel("Volume:"));
+        settingsPanel.add(new JLabel("Volume:", SwingConstants.CENTER));
         settingsPanel.add(volumeSlider);
 
         JTabbedPane settingstp=new JTabbedPane();
@@ -174,11 +174,11 @@ public class MainMenu extends JFrame {
         headerUsername.setDefaultRenderer(new HeaderRenderer());
         headerUsername.setBackground(new Color(217, 217, 217, 204));
         tableUsername.setBackground(new Color(217, 217, 217, 204));
-        //tableUsername.setBounds(settingsPanelX, settingsPanelY, settingsPanelWidth-200, settingsPanelHeight);
+        tableUsername.setBounds(settingsPanelX, settingsPanelY, settingsPanelWidth, settingsPanelHeight);
         tableUsername.setShowGrid(false);
 
         JScrollPane scrollPaneUsername = new JScrollPane(tableUsername);
-        //scrollPaneUsername.setBounds(settingsPanelX, settingsPanelY, settingsPanelWidth, settingsPanelHeight);
+        scrollPaneUsername.setBounds(settingsPanelX, settingsPanelY, settingsPanelWidth, settingsPanelHeight);
         scrollPaneUsername.setOpaque(false);
         scrollPaneUsername.getViewport().setOpaque(false);
 
