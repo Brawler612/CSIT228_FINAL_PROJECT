@@ -18,6 +18,7 @@ import com.example.pacman.Config;
 import com.example.pacman.LeaderBoard.Create;
 import com.example.pacman.LeaderBoard.Leaderboard;
 import com.example.pacman.LeaderBoard.Leaderboards;
+import com.example.pacman.LeaderBoard.Truncate;
 
 public class MainMenu extends JFrame {
     private Connection connection;
@@ -289,6 +290,8 @@ public class MainMenu extends JFrame {
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
         leaderboardPanel.add(scrollPane);
+        JButton clearLeaderButton = new JButton("Clear ALL");
+        leaderboardPanel.add(clearLeaderButton);
 
         // Create the container for username input
         JPanel usernameContainer = new JPanel();
@@ -304,6 +307,21 @@ public class MainMenu extends JFrame {
         usernameContainer.add(cancelButton);
 
         // Set up action listeners for buttons
+        clearLeaderButton.addActionListener(e -> {
+            try {
+                // Assuming you have a database connection named 'connection'
+                // Establish database connection
+                connection = DriverManager.getConnection(Config.getInstance().DB_URL, Config.getInstance().DB_USER, Config.getInstance().DB_PASSWORD);
+                Truncate truncate = new Truncate();
+                truncate.clearAll(connection);
+                this.setVisible(true);
+                connection.close(); // Close the connection after use
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                // Handle SQLException as per your application's requirements
+            }
+        });
+
         okButton.addActionListener(e -> {
             String username = usernameField.getText();
             if (!username.isEmpty()) {

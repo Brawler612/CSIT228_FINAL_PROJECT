@@ -52,7 +52,7 @@ public class Model extends JPanel implements ActionListener {
     private boolean gameOver = false;
 
 
-    private Image heart, ghost;
+    private Image heart, pacman, ghost;
     private Image up, down, left, right;
 
     private int pacman_x, pacman_y, pacmand_x, pacmand_y;
@@ -175,6 +175,7 @@ public class Model extends JPanel implements ActionListener {
         up = new ImageIcon("Game/PacMan/src/images/up_man.gif").getImage();
         left = new ImageIcon("Game/PacMan/src/images/left_man.gif").getImage();
         right = new ImageIcon("Game/PacMan/src/images/right_man.gif").getImage();
+        pacman = new ImageIcon("Game/PacMan/src/images/pacman.gif").getImage();
         ghost = new ImageIcon("Game/PacMan/src/images/ghost.gif").getImage();
         heart = new ImageIcon("Game/PacMan/src/images/heart.png").getImage();
 
@@ -245,7 +246,9 @@ public class Model extends JPanel implements ActionListener {
 
             // Set the text color and draw the string
             g2d.setColor(Color.YELLOW);
-            g2d.drawString(username, xUsername, y-50); // TODO: center username
+            if (username != null) {
+                g2d.drawString(username, xUsername, y - 50); // TODO: center username
+            }
             g2d.drawString(start, x, y);
         } else {
             // Countdown when the game has started
