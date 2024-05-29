@@ -126,8 +126,8 @@ public class MainMenu extends JFrame {
         //layeredPane.add(settingsPanel, JLayeredPane.MODAL_LAYER); // Add settings panel to the modal layer
 
         JPanel settings2Panel = new JPanel();
-        settings2Panel.setLayout(new GridLayout(4, 4, 10, 10));
-        //settings2Panel.setBounds(settingsPanelX, settingsPanelY, settingsPanelWidth, settingsPanelHeight);
+        settings2Panel.setLayout(new GridLayout(2, 4, 10, 10));
+        settings2Panel.setBounds(settingsPanelX, settingsPanelY, settingsPanelWidth, settingsPanelHeight);
         settings2Panel.setBackground(new Color(217, 217, 217, 204)); // Background color with opacity
         //settings2Panel.setBorder(new RoundedBorder(16)); // Set rounded border
         settings2Panel.setVisible(true); // Initially hidden
@@ -152,7 +152,7 @@ public class MainMenu extends JFrame {
 
         accountsPanel.setBackground(new Color(217, 217, 217, 204)); // Background color with opacity
         accountsPanel.setBorder(new RoundedBorder(16)); // Set rounded border
-        //accountsPanel.setBounds(settingsPanelX, settingsPanelY, settingsPanelWidth, settingsPanelHeight);
+        accountsPanel.setBounds(settingsPanelX, settingsPanelY, settingsPanelWidth, settingsPanelHeight);
 
         List<Leaderboard> topScoreUsernames = leaderboards.getTopScores(20);
 
