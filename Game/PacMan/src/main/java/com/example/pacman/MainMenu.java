@@ -7,11 +7,8 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class MainMenu extends JFrame {
-    private Leaderboards leaderboards;
-
     public MainMenu() {
         // Initialize the leaderboards
-        leaderboards = new Leaderboards();
 
         // Set up the frame
         setTitle("Main Menu");
@@ -112,14 +109,6 @@ public class MainMenu extends JFrame {
         leaderboardPanel.setBorder(new RoundedBorder(16)); // Set rounded border
         leaderboardPanel.setVisible(false); // Initially hidden
         layeredPane.add(leaderboardPanel, JLayeredPane.MODAL_LAYER); // Add leaderboard panel to the modal layer
-
-        // Add leaderboard data to the panel
-        leaderboardPanel.setLayout(new BoxLayout(leaderboardPanel, BoxLayout.Y_AXIS));
-        List<String> topScores = leaderboards.getTopScores(10);
-        for (String score : topScores) {
-            JLabel scoreLabel = new JLabel(score);
-            leaderboardPanel.add(scoreLabel);
-        }
 
         // Add mouse listener to gear icon to show/hide settings panel
         gearLabel.addMouseListener(new MouseAdapter() {
