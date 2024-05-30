@@ -275,7 +275,7 @@ public class MainMenu extends JFrame {
             i++;
         }
 
-        //Hello sss
+        //Hello ss
         //JList<Leaderboard> jList = new JList<>(listModel);
 
         //Object[][] data = {{1, 2, 3}, {3, 4, 5}, {5, 6, 7}};
